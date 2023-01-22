@@ -1,0 +1,102 @@
+﻿<!--
+    Copyright Dale Ghent <daleg@elemental.org>
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/
+-->
+<ResourceDictionary
+    x:Class="DaleGhent.NINA.InfluxDbExporter.Resources.OptionsDataTemplates"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <DataTemplate x:Key="InfluxDB_Exporter_Options">
+        <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    Width="110">
+                    <TextBlock.Text>InfluxDB URL</TextBlock.Text>
+                    <TextBlock.ToolTip>The application key assigned for NINA</TextBlock.ToolTip>
+                </TextBlock>
+                <TextBox
+                    Margin="5,0,0,0"
+                    Width="400"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center">
+                    <TextBox.Text>
+                        <Binding Path="InfluxDbUrl" />
+                    </TextBox.Text>
+                </TextBox>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    Width="110">
+                    <TextBlock.Text>Database</TextBlock.Text>
+                    <TextBlock.ToolTip>The database name to use</TextBlock.ToolTip>
+                </TextBlock>
+                <TextBox
+                    Margin="5,0,0,0"
+                    Width="400"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center">
+                    <TextBox.Text>
+                        <Binding Path="InfluxDbDbName" />
+                    </TextBox.Text>
+                </TextBox>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    Width="110">
+                    <TextBlock.Text>User</TextBlock.Text>
+                    <TextBlock.ToolTip>The InfuxDB user to connect as</TextBlock.ToolTip>
+                </TextBlock>
+                <TextBox
+                    Margin="5,0,0,0"
+                    Width="400"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center">
+                    <TextBox.Text>
+                        <Binding Path="InfluxDbUserName" />
+                    </TextBox.Text>
+                </TextBox>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    Width="110">
+                    <TextBlock.Text>Password</TextBlock.Text>
+                    <TextBlock.ToolTip>The password for the designated user</TextBlock.ToolTip>
+                </TextBlock>
+                <PasswordBox
+                    Margin="5,0,0,0"
+                    Width="400"
+                    Height="20"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    CaretBrush="{StaticResource PrimaryBrush}"
+                    Foreground="{StaticResource PrimaryBrush}"
+                    Loaded="PasswordBox_InfluxDbUserPassword_Loaded"
+                    PasswordChanged="PasswordBox_InfluxDbUserPassword_PasswordChanged">
+                    <PasswordBox.Background>
+                        <SolidColorBrush Opacity="0.05" Color="{Binding Color, Source={StaticResource PrimaryBrush}}" />
+                    </PasswordBox.Background>
+                </PasswordBox>
+            </StackPanel>
+        </StackPanel>
+    </DataTemplate>
+</ResourceDictionary>

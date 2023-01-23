@@ -25,7 +25,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         private readonly IImageSaveMediator imageSaveMediator;
         private readonly IInfluxDbExporterOptions options;
 
-        public ImageMetadata(IImageSaveMediator imageSaveMediator, IInfluxDbExporterOptions options) {
+        public ImageMetadata(IInfluxDbExporterOptions options, IImageSaveMediator imageSaveMediator) {
             this.imageSaveMediator = imageSaveMediator;
             this.options = options;
 

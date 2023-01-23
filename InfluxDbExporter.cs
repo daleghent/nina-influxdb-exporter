@@ -41,20 +41,33 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             }
 
             InfluxDbExporterOptions ??= new(profileService);
-            ImageMetadata ??= new(imageSaveMediator, InfluxDbExporterOptions);
-            EquipmentData ??= new(profileService, InfluxDbExporterOptions, cameraMediator, focuserMediator, guiderMediator, telescopeMediator, weatherDataMediator);
+
+            CameraData ??= new(InfluxDbExporterOptions, cameraMediator);
+            FocuserData ??= new(InfluxDbExporterOptions, focuserMediator);
+            GuidingData ??= new(InfluxDbExporterOptions, guiderMediator);
+            MountData ??= new(InfluxDbExporterOptions, telescopeMediator);
+            WeatherData ??= new(InfluxDbExporterOptions, weatherDataMediator);
+            ImageMetadata ??= new(InfluxDbExporterOptions, imageSaveMediator);
         }
 
         public override Task Teardown() {
             InfluxDbExporterOptions.RemoveProfileHandler();
+            CameraData.Dispose();
+            FocuserData.Dispose();
+            MountData.Dispose();
+            WeatherData.Dispose();
+            GuidingData.Unregister();
             ImageMetadata.Unregister();
-            EquipmentData.Dispose();
 
             return base.Teardown();
         }
 
+        public CameraData CameraData { get; set; }
+        public FocuserData FocuserData { get; set; }
+        public GuidingData GuidingData { get; set; }
+        public MountData MountData { get; set; }
+        public WeatherData WeatherData { get; set; }
         public InfluxDbExporterOptions InfluxDbExporterOptions { get; private set; }
         public ImageMetadata ImageMetadata { get; private set; }
-        public EquipmentData EquipmentData { get; private set; }
     }
 }

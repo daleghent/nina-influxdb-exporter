@@ -32,6 +32,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
                                 ICameraMediator cameraMediator,
                                 IFocuserMediator focuserMediator,
                                 IGuiderMediator guiderMediator,
+                                ISwitchMediator switchMediator,
                                 ITelescopeMediator telescopeMediator,
                                 IWeatherDataMediator weatherDataMediator) {
             if (Settings.Default.UpgradeSettings) {
@@ -46,6 +47,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             FocuserData ??= new(InfluxDbExporterOptions, focuserMediator);
             GuidingData ??= new(InfluxDbExporterOptions, guiderMediator);
             MountData ??= new(InfluxDbExporterOptions, telescopeMediator);
+            SwitchData ??= new(InfluxDbExporterOptions, switchMediator);
             WeatherData ??= new(InfluxDbExporterOptions, weatherDataMediator);
             ImageMetadata ??= new(InfluxDbExporterOptions, imageSaveMediator);
         }
@@ -55,6 +57,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             CameraData.Dispose();
             FocuserData.Dispose();
             MountData.Dispose();
+            SwitchData.Dispose();
             WeatherData.Dispose();
             GuidingData.Unregister();
             ImageMetadata.Unregister();
@@ -66,6 +69,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
         public FocuserData FocuserData { get; set; }
         public GuidingData GuidingData { get; set; }
         public MountData MountData { get; set; }
+        public SwitchData SwitchData { get; set; }
         public WeatherData WeatherData { get; set; }
         public InfluxDbExporterOptions InfluxDbExporterOptions { get; private set; }
         public ImageMetadata ImageMetadata { get; private set; }

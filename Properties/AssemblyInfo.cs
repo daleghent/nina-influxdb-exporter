@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("InfluxDB Exporter")]
 // [MANDATORY] A short description of your plugin
-[assembly: AssemblyDescription("Exports metrics to an InfluxDB instance")]
+[assembly: AssemblyDescription("Exports metrics to an InfluxDB 2.x instance")]
 
 // The following attributes are not required for the plugin per se, but are required by the official manifest meta data
 

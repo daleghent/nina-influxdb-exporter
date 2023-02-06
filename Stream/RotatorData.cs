@@ -14,38 +14,38 @@ using DaleGhent.NINA.InfluxDbExporter.Interfaces;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
-using NINA.Equipment.Equipment.MyTelescope;
+using NINA.Equipment.Equipment.MyRotator;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
-    public class MountData : ITelescopeConsumer {
+    public class RotatorData : IRotatorConsumer {
         private readonly IInfluxDbExporterOptions options;
-        private readonly ITelescopeMediator telescopeMediator;
+        private readonly IRotatorMediator rotatorMediator;
 
-        public MountData(IInfluxDbExporterOptions options, ITelescopeMediator telescopeMediator) {
+        public RotatorData(IInfluxDbExporterOptions options, IRotatorMediator rotatorMediator) {
             this.options = options;
-            this.telescopeMediator = telescopeMediator;
-            this.telescopeMediator.RegisterConsumer(this);
+            this.rotatorMediator = rotatorMediator;
+            this.rotatorMediator.RegisterConsumer(this);
         }
 
-        public void SendMountInfo() {
-            if (!TelescopeInfo.Connected) return;
+        private void SendRotatorInfo() {
+            if (!RotatorInfo.Connected) return;
 
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();
 
-            if (!double.IsNaN(TelescopeInfo.Altitude)) {
-                points.Add(PointData.Measurement("mountAltitude")
-                    .Field("value", TelescopeInfo.Altitude)
+            if (!double.IsNaN(RotatorInfo.MechanicalPosition)) {
+                points.Add(PointData.Measurement("rotatorMechanicalPosition")
+                    .Field("value", RotatorInfo.MechanicalPosition)
                     .Timestamp(timeStamp, WritePrecision.Ns));
             }
 
-            if (!double.IsNaN(TelescopeInfo.Azimuth)) {
-                points.Add(PointData.Measurement("mountAzimuth")
-                    .Field("value", TelescopeInfo.Azimuth)
+            if (!double.IsNaN(RotatorInfo.Position)) {
+                points.Add(PointData.Measurement("rotatorPosition")
+                    .Field("value", RotatorInfo.Position)
                     .Timestamp(timeStamp, WritePrecision.Ns));
             }
 
@@ -56,15 +56,15 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             writeApi.Dispose();
         }
 
-        private TelescopeInfo TelescopeInfo { get; set; }
+        private RotatorInfo RotatorInfo { get; set; }
 
-        public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
-            TelescopeInfo = deviceInfo;
-            SendMountInfo();
+        public void UpdateDeviceInfo(RotatorInfo deviceInfo) {
+            RotatorInfo = deviceInfo;
+            SendRotatorInfo();
         }
 
         public void Dispose() {
-            telescopeMediator.RemoveConsumer(this);
+            rotatorMediator.RemoveConsumer(this);
         }
     }
 }

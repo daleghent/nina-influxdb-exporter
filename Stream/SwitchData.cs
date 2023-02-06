@@ -32,7 +32,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         }
 
         private void SendSwitchData() {
-            if (!SwitchInfo.Connected || SwitchInfo.ReadonlySwitches.Count == 0) return;
+            if (!SwitchInfo.Connected || SwitchInfo.ReadonlySwitches.Count < 1) return;
 
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();
@@ -47,9 +47,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             }
 
             if (points.Count > 0) {
-                using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbUserName, options.InfluxDbUserPassword, options.InfluxDbDbName, string.Empty);
+                using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbToken);
                 using var writeApi = client.GetWriteApi();
-                writeApi.WritePoints(points);
+                writeApi.WritePoints(points, options.InfluxDbBucket, options.InfluxDbOrgId);
                 writeApi.Flush();
                 writeApi.Dispose();
             }

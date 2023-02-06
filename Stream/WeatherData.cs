@@ -117,11 +117,13 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                     .Timestamp(timeStamp, WritePrecision.Ns));
             }
 
-            using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbUserName, options.InfluxDbUserPassword, options.InfluxDbDbName, string.Empty);
-            using var writeApi = client.GetWriteApi();
-            writeApi.WritePoints(points);
-            writeApi.Flush();
-            writeApi.Dispose();
+            if (points.Count > 0) {
+                using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbToken);
+                using var writeApi = client.GetWriteApi();
+                writeApi.WritePoints(points, options.InfluxDbBucket, options.InfluxDbOrgId);
+                writeApi.Flush();
+                writeApi.Dispose();
+            }
         }
 
         private WeatherDataInfo WeatherDataInfo { get; set; }

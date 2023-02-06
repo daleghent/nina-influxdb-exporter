@@ -44,26 +44,26 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             }
         }
 
-        public string InfluxDbDbName {
-            get => pluginOptionsAccessor.GetValueString(nameof(InfluxDbDbName), string.Empty);
+        public string InfluxDbBucket {
+            get => pluginOptionsAccessor.GetValueString(nameof(InfluxDbBucket), string.Empty);
             set {
-                pluginOptionsAccessor.SetValueString(nameof(InfluxDbDbName), value);
+                pluginOptionsAccessor.SetValueString(nameof(InfluxDbBucket), value);
                 RaisePropertyChanged();
             }
         }
 
-        public string InfluxDbUserName {
-            get => pluginOptionsAccessor.GetValueString(nameof(InfluxDbUserName), string.Empty);
+        public string InfluxDbOrgId {
+            get => pluginOptionsAccessor.GetValueString(nameof(InfluxDbOrgId), string.Empty);
             set {
-                pluginOptionsAccessor.SetValueString(nameof(InfluxDbUserName), value);
+                pluginOptionsAccessor.SetValueString(nameof(InfluxDbOrgId), value);
                 RaisePropertyChanged();
             }
         }
 
-        public string InfluxDbUserPassword {
-            get => Security.Decrypt(pluginOptionsAccessor.GetValueString(nameof(InfluxDbUserPassword), string.Empty));
+        public string InfluxDbToken {
+            get => Security.Decrypt(pluginOptionsAccessor.GetValueString(nameof(InfluxDbToken), string.Empty));
             set {
-                pluginOptionsAccessor.SetValueString(nameof(InfluxDbUserPassword), Security.Encrypt(value));
+                pluginOptionsAccessor.SetValueString(nameof(InfluxDbToken), Security.Encrypt(value));
                 RaisePropertyChanged();
             }
         }
@@ -76,8 +76,8 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             }
         }
 
-        public void SetInfluxDbUserPassword(SecureString s) {
-            InfluxDbUserPassword = SecureStringToString(s);
+        public void SetInfluxDbToken(SecureString s) {
+            InfluxDbToken = SecureStringToString(s);
         }
 
         private static string SecureStringToString(SecureString value) {

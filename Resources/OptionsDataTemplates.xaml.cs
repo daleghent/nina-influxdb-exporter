@@ -35,18 +35,18 @@ namespace DaleGhent.NINA.InfluxDbExporter.Resources {
             e.Handled = true;
         }
 
-        private void PasswordBox_InfluxDbUserPassword_Loaded(object sender, RoutedEventArgs e) {
+        private void PasswordBox_InfluxDbToken_Loaded(object sender, RoutedEventArgs e) {
             if (sender is PasswordBox elem) {
                 if (elem.DataContext is InfluxDbExporterOptions vm) {
-                    elem.Password = vm.InfluxDbUserPassword;
+                    elem.Password = vm.InfluxDbToken;
                 }
             }
         }
 
-        private void PasswordBox_InfluxDbUserPassword_PasswordChanged(object sender, RoutedEventArgs e) {
+        private void PasswordBox_InfluxDbToken_PasswordChanged(object sender, RoutedEventArgs e) {
             if (sender is PasswordBox elem) {
                 if (elem.DataContext is InfluxDbExporterOptions vm) {
-                    vm.SetInfluxDbUserPassword(elem.SecurePassword);
+                    vm.SetInfluxDbToken(elem.SecurePassword);
                 }
             }
         }

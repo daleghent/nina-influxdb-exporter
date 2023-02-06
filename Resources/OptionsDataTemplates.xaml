@@ -39,8 +39,8 @@
                     VerticalAlignment="Center"
                     HorizontalAlignment="Right"
                     Width="110">
-                    <TextBlock.Text>Database</TextBlock.Text>
-                    <TextBlock.ToolTip>The database name to use</TextBlock.ToolTip>
+                    <TextBlock.Text>Bucket</TextBlock.Text>
+                    <TextBlock.ToolTip>The bucket to send metrics to</TextBlock.ToolTip>
                 </TextBlock>
                 <TextBox
                     Margin="5,0,0,0"
@@ -48,7 +48,7 @@
                     VerticalAlignment="Center"
                     VerticalContentAlignment="Center">
                     <TextBox.Text>
-                        <Binding Path="InfluxDbDbName" />
+                        <Binding Path="InfluxDbBucket" />
                     </TextBox.Text>
                 </TextBox>
             </StackPanel>
@@ -58,8 +58,8 @@
                     VerticalAlignment="Center"
                     HorizontalAlignment="Right"
                     Width="110">
-                    <TextBlock.Text>User</TextBlock.Text>
-                    <TextBlock.ToolTip>The InfuxDB user to connect as</TextBlock.ToolTip>
+                    <TextBlock.Text>Org ID</TextBlock.Text>
+                    <TextBlock.ToolTip>The InfuxDB Org ID to use</TextBlock.ToolTip>
                 </TextBlock>
                 <TextBox
                     Margin="5,0,0,0"
@@ -67,7 +67,7 @@
                     VerticalAlignment="Center"
                     VerticalContentAlignment="Center">
                     <TextBox.Text>
-                        <Binding Path="InfluxDbUserName" />
+                        <Binding Path="InfluxDbOrgId" />
                     </TextBox.Text>
                 </TextBox>
             </StackPanel>
@@ -77,21 +77,21 @@
                     VerticalAlignment="Center"
                     HorizontalAlignment="Right"
                     Width="110">
-                    <TextBlock.Text>Password</TextBlock.Text>
-                    <TextBlock.ToolTip>The password for the designated user</TextBlock.ToolTip>
+                    <TextBlock.Text>Token</TextBlock.Text>
+                    <TextBlock.ToolTip>InfluxDB 2.x access token</TextBlock.ToolTip>
                 </TextBlock>
                 <PasswordBox
                     Margin="5,0,0,0"
                     Width="400"
                     Height="20"
-                    VerticalAlignment="Center"
+                    VerticalAlignment="Top"
                     VerticalContentAlignment="Center"
                     BorderBrush="{StaticResource BorderBrush}"
                     BorderThickness="0"
                     CaretBrush="{StaticResource PrimaryBrush}"
                     Foreground="{StaticResource PrimaryBrush}"
-                    Loaded="PasswordBox_InfluxDbUserPassword_Loaded"
-                    PasswordChanged="PasswordBox_InfluxDbUserPassword_PasswordChanged">
+                    Loaded="PasswordBox_InfluxDbToken_Loaded"
+                    PasswordChanged="PasswordBox_InfluxDbToken_PasswordChanged">
                     <PasswordBox.Background>
                         <SolidColorBrush Opacity="0.05" Color="{Binding Color, Source={StaticResource PrimaryBrush}}" />
                     </PasswordBox.Background>

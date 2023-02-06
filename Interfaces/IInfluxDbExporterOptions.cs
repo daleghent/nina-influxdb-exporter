@@ -15,9 +15,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Interfaces {
 
     public interface IInfluxDbExporterOptions : INotifyPropertyChanged {
         string InfluxDbUrl { get; set; }
-        string InfluxDbDbName { get; set; }
-        string InfluxDbUserName { get; set; }
-        string InfluxDbUserPassword { get; set; }
+        string InfluxDbBucket { get; set; }
+        string InfluxDbOrgId { get; set; }
+        string InfluxDbToken { get; set; }
         bool SaveFullImagePath { get; set; }
     }
 }

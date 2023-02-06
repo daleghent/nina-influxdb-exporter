@@ -13,11 +13,11 @@
 using DaleGhent.NINA.InfluxDbExporter.Interfaces;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
-using InfluxDB.Client.Core;
+using InfluxDB.Client.Writes;
 using NINA.Core.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
-using NINA.Profile.Interfaces;
 using System;
+using System.Collections.Generic;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
@@ -36,55 +36,41 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var guiderInfo = guiderMediator.GetInfo();
 
             if (guiderInfo.Connected) {
-                using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbUserName, options.InfluxDbUserPassword, options.InfluxDbDbName, string.Empty);
-                using var writeApi = client.GetWriteApi();
-
-                var timeNow = DateTime.UtcNow;
+                var timeStamp = DateTime.UtcNow;
+                var points = new List<PointData>();
 
                 if (!double.IsNaN(guiderInfo.RMSError.Dec.Arcseconds)) {
-                    var guiderErrDecArcs = new GuiderErrDecArcsec { Value = guiderInfo.RMSError.Dec.Arcseconds, Time = timeNow };
-                    writeApi.WriteMeasurement(guiderErrDecArcs, WritePrecision.Ns);
+                    points.Add(PointData.Measurement("guiderErrDecArcsec")
+                        .Field("value", guiderInfo.RMSError.Dec.Arcseconds)
+                        .Timestamp(timeStamp, WritePrecision.Ns));
                 }
 
                 if (!double.IsNaN(guiderInfo.RMSError.Dec.Pixel)) {
-                    var guiderErrDecPixels = new GuiderErrDecPixels { Value = guiderInfo.RMSError.Dec.Pixel, Time = timeNow };
-                    writeApi.WriteMeasurement(guiderErrDecPixels, WritePrecision.Ns);
+                    points.Add(PointData.Measurement("guiderErrDecPixel")
+                        .Field("value", guiderInfo.RMSError.Dec.Pixel)
+                        .Timestamp(timeStamp, WritePrecision.Ns));
                 }
 
                 if (!double.IsNaN(guiderInfo.RMSError.RA.Arcseconds)) {
-                    var guiderErrRAArcs = new GuiderErrRAArcsec { Value = guiderInfo.RMSError.RA.Arcseconds, Time = timeNow };
-                    writeApi.WriteMeasurement(guiderErrRAArcs, WritePrecision.Ns);
+                    points.Add(PointData.Measurement("guiderErrRAArcsec")
+                        .Field("value", guiderInfo.RMSError.RA.Arcseconds)
+                        .Timestamp(timeStamp, WritePrecision.Ns));
                 }
 
                 if (!double.IsNaN(guiderInfo.RMSError.RA.Pixel)) {
-                    var guiderErrRAPixels = new GuiderErrRAPixels { Value = guiderInfo.RMSError.RA.Pixel, Time = timeNow };
-                    writeApi.WriteMeasurement(guiderErrRAPixels, WritePrecision.Ns);
+                    points.Add(PointData.Measurement("guiderErrRAPixel")
+                        .Field("value", guiderInfo.RMSError.RA.Pixel)
+                        .Timestamp(timeStamp, WritePrecision.Ns));
+                }
+
+                if (points.Count > 0) {
+                    using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbToken);
+                    using var writeApi = client.GetWriteApi();
+                    writeApi.WritePoints(points, options.InfluxDbBucket, options.InfluxDbOrgId);
+                    writeApi.Flush();
+                    writeApi.Dispose();
                 }
             }
-        }
-
-        [Measurement("guiderErrDecArcsec")]
-        private class GuiderErrDecArcsec {
-            [Column("value")] public double Value { get; set; }
-            [Column(IsTimestamp = true)] public DateTime Time { get; set; }
-        }
-
-        [Measurement("guiderErrDecPixels")]
-        private class GuiderErrDecPixels {
-            [Column("value")] public double Value { get; set; }
-            [Column(IsTimestamp = true)] public DateTime Time { get; set; }
-        }
-
-        [Measurement("guiderErrRAArcsec")]
-        private class GuiderErrRAArcsec {
-            [Column("value")] public double Value { get; set; }
-            [Column(IsTimestamp = true)] public DateTime Time { get; set; }
-        }
-
-        [Measurement("guiderErrRAPixels")]
-        private class GuiderErrRAPixels {
-            [Column("value")] public double Value { get; set; }
-            [Column(IsTimestamp = true)] public DateTime Time { get; set; }
         }
 
         public void Unregister() {

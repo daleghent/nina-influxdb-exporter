@@ -36,18 +36,17 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();
+            float valueFloat;
 
-            if (!double.IsNaN(RotatorInfo.MechanicalPosition)) {
-                points.Add(PointData.Measurement("rotatorMechanicalPosition")
-                    .Field("value", RotatorInfo.MechanicalPosition)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueFloat = float.IsNaN(RotatorInfo.MechanicalPosition) ? -1f : RotatorInfo.MechanicalPosition;
+            points.Add(PointData.Measurement("rotatorMechanicalPosition")
+                .Field("value", valueFloat)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (!double.IsNaN(RotatorInfo.Position)) {
-                points.Add(PointData.Measurement("rotatorPosition")
-                    .Field("value", RotatorInfo.Position)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueFloat = float.IsNaN(RotatorInfo.Position) ? -1f : RotatorInfo.Position;
+            points.Add(PointData.Measurement("rotatorPosition")
+                .Field("value", valueFloat)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
             using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbToken);
             using var writeApi = client.GetWriteApi();

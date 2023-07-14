@@ -37,17 +37,15 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();
 
-            if (!double.IsNaN(FocuserInfo.Temperature)) {
-                points.Add(PointData.Measurement("focuserTemperature")
-                    .Field("value", FocuserInfo.Temperature)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            double valueDouble = double.IsNaN(FocuserInfo.Temperature) ? -1d : FocuserInfo.Temperature;
+            points.Add(PointData.Measurement("focuserTemperature")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (!double.IsNaN(FocuserInfo.Position)) {
-                points.Add(PointData.Measurement("focuserPostition")
-                    .Field("value", FocuserInfo.Position)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            var valueInt = (FocuserInfo.Position < 0) ? -1 : FocuserInfo.Position;
+            points.Add(PointData.Measurement("focuserPostition")
+                .Field("value", valueInt)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
             using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbToken);
             using var writeApi = client.GetWriteApi();

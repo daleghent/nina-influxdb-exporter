@@ -38,38 +38,37 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             if (guiderInfo.Connected) {
                 var timeStamp = DateTime.UtcNow;
                 var points = new List<PointData>();
+                double valueDouble;
 
-                if (!double.IsNaN(guiderInfo.RMSError.Dec.Arcseconds)) {
-                    points.Add(PointData.Measurement("guiderErrDecArcsec")
-                        .Field("value", guiderInfo.RMSError.Dec.Arcseconds)
-                        .Timestamp(timeStamp, WritePrecision.Ns));
-                }
+                valueDouble = double.IsNaN(guiderInfo.RMSError.Dec.Arcseconds) ?
+                    -1d : guiderInfo.RMSError.Dec.Arcseconds;
+                points.Add(PointData.Measurement("guiderErrDecArcsec")
+                    .Field("value", valueDouble)
+                    .Timestamp(timeStamp, WritePrecision.Ns));
 
-                if (!double.IsNaN(guiderInfo.RMSError.Dec.Pixel)) {
-                    points.Add(PointData.Measurement("guiderErrDecPixel")
-                        .Field("value", guiderInfo.RMSError.Dec.Pixel)
-                        .Timestamp(timeStamp, WritePrecision.Ns));
-                }
+                valueDouble = double.IsNaN(guiderInfo.RMSError.Dec.Pixel) ?
+                    -1d : guiderInfo.RMSError.Dec.Pixel;
+                points.Add(PointData.Measurement("guiderErrDecPixel")
+                    .Field("value", valueDouble)
+                    .Timestamp(timeStamp, WritePrecision.Ns));
 
-                if (!double.IsNaN(guiderInfo.RMSError.RA.Arcseconds)) {
-                    points.Add(PointData.Measurement("guiderErrRAArcsec")
-                        .Field("value", guiderInfo.RMSError.RA.Arcseconds)
-                        .Timestamp(timeStamp, WritePrecision.Ns));
-                }
+                valueDouble = double.IsNaN(guiderInfo.RMSError.RA.Arcseconds) ?
+                    -1d : guiderInfo.RMSError.RA.Arcseconds;
+                points.Add(PointData.Measurement("guiderErrRAArcsec")
+                    .Field("value", valueDouble)
+                    .Timestamp(timeStamp, WritePrecision.Ns));
 
-                if (!double.IsNaN(guiderInfo.RMSError.RA.Pixel)) {
-                    points.Add(PointData.Measurement("guiderErrRAPixel")
-                        .Field("value", guiderInfo.RMSError.RA.Pixel)
-                        .Timestamp(timeStamp, WritePrecision.Ns));
-                }
+                valueDouble = double.IsNaN(guiderInfo.RMSError.RA.Pixel) ?
+                    -1d : guiderInfo.RMSError.RA.Pixel;
+                points.Add(PointData.Measurement("guiderErrRAPixel")
+                    .Field("value", valueDouble)
+                    .Timestamp(timeStamp, WritePrecision.Ns));
 
-                if (points.Count > 0) {
-                    using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbToken);
-                    using var writeApi = client.GetWriteApi();
-                    writeApi.WritePoints(points, options.InfluxDbBucket, options.InfluxDbOrgId);
-                    writeApi.Flush();
-                    writeApi.Dispose();
-                }
+                using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbToken);
+                using var writeApi = client.GetWriteApi();
+                writeApi.WritePoints(points, options.InfluxDbBucket, options.InfluxDbOrgId);
+                writeApi.Flush();
+                writeApi.Dispose();
             }
         }
 

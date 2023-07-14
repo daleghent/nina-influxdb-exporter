@@ -36,18 +36,17 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();
+            double valueDouble;
 
-            if (!double.IsNaN(TelescopeInfo.Altitude)) {
-                points.Add(PointData.Measurement("mountAltitude")
-                    .Field("value", TelescopeInfo.Altitude)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(TelescopeInfo.Altitude) ? -1d : TelescopeInfo.Altitude;
+            points.Add(PointData.Measurement("mountAltitude")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (!double.IsNaN(TelescopeInfo.Azimuth)) {
-                points.Add(PointData.Measurement("mountAzimuth")
-                    .Field("value", TelescopeInfo.Azimuth)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(TelescopeInfo.Azimuth) ? -1d : TelescopeInfo.Azimuth;
+            points.Add(PointData.Measurement("mountAzimuth")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
             using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbToken);
             using var writeApi = client.GetWriteApi();

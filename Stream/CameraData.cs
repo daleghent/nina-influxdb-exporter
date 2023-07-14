@@ -36,24 +36,22 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();
+            double valueDouble;
 
-            if (!double.IsNaN(CameraInfo.Temperature)) {
-                points.Add(PointData.Measurement("cameraSensorTemp")
-                    .Field("value", CameraInfo.Temperature)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(CameraInfo.Temperature) ? -1d : CameraInfo.Temperature;
+            points.Add(PointData.Measurement("cameraSensorTemp")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (!double.IsNaN(CameraInfo.CoolerPower)) {
-                points.Add(PointData.Measurement("cameraCoolerPower")
-                    .Field("value", CameraInfo.CoolerPower)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(CameraInfo.CoolerPower) ? -1d : CameraInfo.CoolerPower;
+            points.Add(PointData.Measurement("cameraCoolerPower")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (CameraInfo.Battery > -1) {
-                points.Add(PointData.Measurement("cameraBatteryLevel")
-                    .Field("value", CameraInfo.Battery)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            var valueInt = (CameraInfo.Battery < 0) ? -1 : CameraInfo.Battery;
+            points.Add(PointData.Measurement("cameraBatteryLevel")
+                .Field("value", valueInt)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
             using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbToken);
             using var writeApi = client.GetWriteApi();

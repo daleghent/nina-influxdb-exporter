@@ -14,12 +14,10 @@ using DaleGhent.NINA.InfluxDbExporter.Interfaces;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
-using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Equipment.MyWeatherData;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
-using System.Printing;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
@@ -38,92 +36,91 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();
+            double valueDouble;
 
-            if (!double.IsNaN(WeatherDataInfo.CloudCover)) {
-                points.Add(PointData.Measurement("wxCloudCover")
-                    .Field("value", WeatherDataInfo.CloudCover)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(WeatherDataInfo.CloudCover) ?
+                -1d : WeatherDataInfo.CloudCover;
+            points.Add(PointData.Measurement("wxCloudCover")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (!double.IsNaN(WeatherDataInfo.DewPoint)) {
-                points.Add(PointData.Measurement("wxDewPoint")
-                    .Field("value", WeatherDataInfo.DewPoint)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(WeatherDataInfo.DewPoint) ?
+                -1d : WeatherDataInfo.DewPoint;
+            points.Add(PointData.Measurement("wxDewPoint")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (!double.IsNaN(WeatherDataInfo.Humidity)) {
-                points.Add(PointData.Measurement("wxHumidity")
-                    .Field("value", WeatherDataInfo.Humidity)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(WeatherDataInfo.Humidity) ?
+                -1d : WeatherDataInfo.Humidity;
+            points.Add(PointData.Measurement("wxHumidity")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (!double.IsNaN(WeatherDataInfo.Pressure)) {
-                points.Add(PointData.Measurement("wxPressure")
-                    .Field("value", WeatherDataInfo.Pressure)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(WeatherDataInfo.Pressure) ?
+                -1d : WeatherDataInfo.Pressure;
+            points.Add(PointData.Measurement("wxPressure")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (!double.IsNaN(WeatherDataInfo.RainRate)) {
-                points.Add(PointData.Measurement("wxRainRate")
-                    .Field("value", WeatherDataInfo.RainRate)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(WeatherDataInfo.RainRate) ?
+                -1d : WeatherDataInfo.RainRate;
+            points.Add(PointData.Measurement("wxRainRate")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (!double.IsNaN(WeatherDataInfo.SkyBrightness)) {
-                points.Add(PointData.Measurement("wxSkyBrightness")
-                    .Field("value", WeatherDataInfo.SkyBrightness)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(WeatherDataInfo.SkyBrightness) ?
+                -1d : WeatherDataInfo.SkyBrightness;
+            points.Add(PointData.Measurement("wxSkyBrightness")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (!double.IsNaN(WeatherDataInfo.SkyQuality)) {
-                points.Add(PointData.Measurement("wxSkyQuality")
-                    .Field("value", WeatherDataInfo.SkyQuality)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(WeatherDataInfo.SkyQuality) ?
+                -1d : WeatherDataInfo.SkyQuality;
+            points.Add(PointData.Measurement("wxSkyQuality")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (!double.IsNaN(WeatherDataInfo.SkyTemperature)) {
-                points.Add(PointData.Measurement("wxSkyTemperature")
-                    .Field("value", WeatherDataInfo.SkyTemperature)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(WeatherDataInfo.SkyTemperature) ?
+                -1d : WeatherDataInfo.SkyTemperature;
+            points.Add(PointData.Measurement("wxSkyTemperature")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (!double.IsNaN(WeatherDataInfo.StarFWHM)) {
-                points.Add(PointData.Measurement("wxStarFWHM")
-                    .Field("value", WeatherDataInfo.StarFWHM)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(WeatherDataInfo.StarFWHM) ?
+                -1d : WeatherDataInfo.StarFWHM;
+            points.Add(PointData.Measurement("wxStarFWHM")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (!double.IsNaN(WeatherDataInfo.Temperature)) {
-                points.Add(PointData.Measurement("wxTemperature")
-                    .Field("value", WeatherDataInfo.Temperature)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(WeatherDataInfo.Temperature) ?
+                -1d : WeatherDataInfo.Temperature;
+            points.Add(PointData.Measurement("wxTemperature")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (!double.IsNaN(WeatherDataInfo.WindDirection)) {
-                points.Add(PointData.Measurement("wxWindDirection")
-                    .Field("value", WeatherDataInfo.WindDirection)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(WeatherDataInfo.WindDirection) ?
+                -1d : WeatherDataInfo.WindDirection;
+            points.Add(PointData.Measurement("wxWindDirection")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (!double.IsNaN(WeatherDataInfo.WindGust)) {
-                points.Add(PointData.Measurement("wxWindGust")
-                    .Field("value", WeatherDataInfo.WindGust)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(WeatherDataInfo.WindGust) ?
+                -1d : WeatherDataInfo.WindGust;
+            points.Add(PointData.Measurement("wxWindGust")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (!double.IsNaN(WeatherDataInfo.WindSpeed)) {
-                points.Add(PointData.Measurement("wxWindSpeed")
-                    .Field("value", WeatherDataInfo.WindSpeed)
-                    .Timestamp(timeStamp, WritePrecision.Ns));
-            }
+            valueDouble = double.IsNaN(WeatherDataInfo.WindSpeed) ?
+                -1d : WeatherDataInfo.WindSpeed;
+            points.Add(PointData.Measurement("wxWindSpeed")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
 
-            if (points.Count > 0) {
-                using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbToken);
-                using var writeApi = client.GetWriteApi();
-                writeApi.WritePoints(points, options.InfluxDbBucket, options.InfluxDbOrgId);
-                writeApi.Flush();
-                writeApi.Dispose();
-            }
+            using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbToken);
+            using var writeApi = client.GetWriteApi();
+            writeApi.WritePoints(points, options.InfluxDbBucket, options.InfluxDbOrgId);
+            writeApi.Flush();
+            writeApi.Dispose();
         }
 
         private WeatherDataInfo WeatherDataInfo { get; set; }

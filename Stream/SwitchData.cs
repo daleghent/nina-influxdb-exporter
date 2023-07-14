@@ -14,6 +14,7 @@ using DaleGhent.NINA.InfluxDbExporter.Interfaces;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
+using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MySwitch;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
@@ -32,13 +33,16 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         }
 
         private void SendSwitchData() {
-            if (!SwitchInfo.Connected || SwitchInfo.ReadonlySwitches.Count < 1) return;
+            if (!SwitchInfo.Connected) return;
+            if (SwitchInfo.ReadonlySwitches == null) return;
+            if (SwitchInfo.ReadonlySwitches.Count < 1) return;
 
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();
 
             foreach (var roSwitch in SwitchInfo.ReadonlySwitches) {
                 if (!double.IsNaN(roSwitch.Value)) {
+                    Logger.Trace($"Adding {roSwitch.Name} ({roSwitch.Id}), Value={roSwitch.Value}");
                     points.Add(PointData.Measurement($"switchROSwitch{roSwitch.Id}")
                         .Tag("name", roSwitch.Name)
                         .Field("value", roSwitch.Value)

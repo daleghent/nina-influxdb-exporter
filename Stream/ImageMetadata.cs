@@ -19,6 +19,7 @@ using System;
 using System.IO;
 using InfluxDB.Client.Writes;
 using System.Collections.Generic;
+using DaleGhent.NINA.InfluxDbExporter.Utilities;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
@@ -35,6 +36,8 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
         private void ImageSaved(object sender, ImageSavedEventArgs args) {
             try {
+                if (!Utilities.Utilities.ConfigCheck(this.options)) return;
+
                 var imgName = args.PathToImage.LocalPath;
 
                 if (!options.SaveFullImagePath) {
@@ -217,6 +220,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
                 using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbToken);
                 using var writeApi = client.GetWriteApi();
+                writeApi.EventHandler += WriteEventHandler.WriteEvent;
                 writeApi.WritePoints(points, options.InfluxDbBucket, options.InfluxDbOrgId);
                 writeApi.Flush();
                 writeApi.Dispose();

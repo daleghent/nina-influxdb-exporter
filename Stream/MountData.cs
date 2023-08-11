@@ -11,6 +11,7 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.InfluxDbExporter.Interfaces;
+using DaleGhent.NINA.InfluxDbExporter.Utilities;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
@@ -32,6 +33,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         }
 
         public void SendMountInfo() {
+            if (!Utilities.Utilities.ConfigCheck(this.options)) return;
             if (!TelescopeInfo.Connected) return;
 
             var timeStamp = DateTime.UtcNow;
@@ -50,6 +52,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
             using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbToken);
             using var writeApi = client.GetWriteApi();
+            writeApi.EventHandler += WriteEventHandler.WriteEvent;
             writeApi.WritePoints(points, options.InfluxDbBucket, options.InfluxDbOrgId);
             writeApi.Flush();
             writeApi.Dispose();

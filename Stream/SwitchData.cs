@@ -11,6 +11,7 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.InfluxDbExporter.Interfaces;
+using DaleGhent.NINA.InfluxDbExporter.Utilities;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
@@ -33,6 +34,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         }
 
         private void SendSwitchData() {
+            if (!Utilities.Utilities.ConfigCheck(this.options)) return;
             if (!SwitchInfo.Connected) return;
             if (SwitchInfo.ReadonlySwitches == null) return;
             if (SwitchInfo.ReadonlySwitches.Count < 1) return;
@@ -53,6 +55,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             if (points.Count > 0) {
                 using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbToken);
                 using var writeApi = client.GetWriteApi();
+                writeApi.EventHandler += WriteEventHandler.WriteEvent;
                 writeApi.WritePoints(points, options.InfluxDbBucket, options.InfluxDbOrgId);
                 writeApi.Flush();
                 writeApi.Dispose();

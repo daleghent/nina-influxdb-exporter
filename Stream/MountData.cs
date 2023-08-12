@@ -41,12 +41,12 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             double valueDouble;
 
             valueDouble = double.IsNaN(TelescopeInfo.Altitude) ? -1d : TelescopeInfo.Altitude;
-            points.Add(PointData.Measurement("mountAltitude")
+            points.Add(PointData.Measurement("mount_altitude")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(TelescopeInfo.Azimuth) ? -1d : TelescopeInfo.Azimuth;
-            points.Add(PointData.Measurement("mountAzimuth")
+            points.Add(PointData.Measurement("mount_azimuth")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 

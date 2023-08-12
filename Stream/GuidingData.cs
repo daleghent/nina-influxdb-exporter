@@ -44,25 +44,25 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
                 valueDouble = double.IsNaN(guiderInfo.RMSError.Dec.Arcseconds) ?
                     -1d : guiderInfo.RMSError.Dec.Arcseconds;
-                points.Add(PointData.Measurement("guiderErrDecArcsec")
+                points.Add(PointData.Measurement("guider_err_dec_arcsec")
                     .Field("value", valueDouble)
                     .Timestamp(timeStamp, WritePrecision.Ns));
 
                 valueDouble = double.IsNaN(guiderInfo.RMSError.Dec.Pixel) ?
                     -1d : guiderInfo.RMSError.Dec.Pixel;
-                points.Add(PointData.Measurement("guiderErrDecPixel")
+                points.Add(PointData.Measurement("guider_err_dec_pixel")
                     .Field("value", valueDouble)
                     .Timestamp(timeStamp, WritePrecision.Ns));
 
                 valueDouble = double.IsNaN(guiderInfo.RMSError.RA.Arcseconds) ?
                     -1d : guiderInfo.RMSError.RA.Arcseconds;
-                points.Add(PointData.Measurement("guiderErrRAArcsec")
+                points.Add(PointData.Measurement("guider_err_ra_arcsec")
                     .Field("value", valueDouble)
                     .Timestamp(timeStamp, WritePrecision.Ns));
 
                 valueDouble = double.IsNaN(guiderInfo.RMSError.RA.Pixel) ?
                     -1d : guiderInfo.RMSError.RA.Pixel;
-                points.Add(PointData.Measurement("guiderErrRAPixel")
+                points.Add(PointData.Measurement("guider_err_ra_pixel")
                     .Field("value", valueDouble)
                     .Timestamp(timeStamp, WritePrecision.Ns));
 

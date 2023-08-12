@@ -42,79 +42,79 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
             valueDouble = double.IsNaN(WeatherDataInfo.CloudCover) ?
                 -1d : WeatherDataInfo.CloudCover;
-            points.Add(PointData.Measurement("wxCloudCover")
+            points.Add(PointData.Measurement("wx_cloud_cover")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(WeatherDataInfo.DewPoint) ?
                 -1d : WeatherDataInfo.DewPoint;
-            points.Add(PointData.Measurement("wxDewPoint")
+            points.Add(PointData.Measurement("wx_dewpoint")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(WeatherDataInfo.Humidity) ?
                 -1d : WeatherDataInfo.Humidity;
-            points.Add(PointData.Measurement("wxHumidity")
+            points.Add(PointData.Measurement("wx_humidity")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(WeatherDataInfo.Pressure) ?
                 -1d : WeatherDataInfo.Pressure;
-            points.Add(PointData.Measurement("wxPressure")
+            points.Add(PointData.Measurement("wx_pressure")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(WeatherDataInfo.RainRate) ?
                 -1d : WeatherDataInfo.RainRate;
-            points.Add(PointData.Measurement("wxRainRate")
+            points.Add(PointData.Measurement("wx_rain_rate")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(WeatherDataInfo.SkyBrightness) ?
                 -1d : WeatherDataInfo.SkyBrightness;
-            points.Add(PointData.Measurement("wxSkyBrightness")
+            points.Add(PointData.Measurement("wx_sky_brightness")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(WeatherDataInfo.SkyQuality) ?
                 -1d : WeatherDataInfo.SkyQuality;
-            points.Add(PointData.Measurement("wxSkyQuality")
+            points.Add(PointData.Measurement("wx_sky_quality")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(WeatherDataInfo.SkyTemperature) ?
                 -1d : WeatherDataInfo.SkyTemperature;
-            points.Add(PointData.Measurement("wxSkyTemperature")
+            points.Add(PointData.Measurement("wx_sky_temperature")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(WeatherDataInfo.StarFWHM) ?
                 -1d : WeatherDataInfo.StarFWHM;
-            points.Add(PointData.Measurement("wxStarFWHM")
+            points.Add(PointData.Measurement("wx_star_fwhm")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(WeatherDataInfo.Temperature) ?
                 -1d : WeatherDataInfo.Temperature;
-            points.Add(PointData.Measurement("wxTemperature")
+            points.Add(PointData.Measurement("wx_temperature")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(WeatherDataInfo.WindDirection) ?
                 -1d : WeatherDataInfo.WindDirection;
-            points.Add(PointData.Measurement("wxWindDirection")
+            points.Add(PointData.Measurement("wx_wind_direction")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(WeatherDataInfo.WindGust) ?
                 -1d : WeatherDataInfo.WindGust;
-            points.Add(PointData.Measurement("wxWindGust")
+            points.Add(PointData.Measurement("wx_wind_gust")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(WeatherDataInfo.WindSpeed) ?
                 -1d : WeatherDataInfo.WindSpeed;
-            points.Add(PointData.Measurement("wxWindSpeed")
+            points.Add(PointData.Measurement("wx_wind_speed")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 

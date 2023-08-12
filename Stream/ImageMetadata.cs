@@ -54,167 +54,167 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 var targetName = args.MetaData.Target.Name;
 
                 valueDouble = double.IsNaN(args.Statistics?.Mean ?? 0d) ? 0d : args.Statistics.Mean;
-                point = PointData.Measurement("imageStatsMean")
+                point = PointData.Measurement("image_mean")
                     .Field("value", valueDouble)
-                    .Tag("imagename", imgName)
+                    .Tag("image_file_name", imgName)
                     .Timestamp(imgTime, WritePrecision.Ns);
 
                 if (!string.IsNullOrEmpty(targetName)) {
-                    point.Tag("targetname", targetName);
+                    point.Tag("target_name", targetName);
                 }
                 points.Add(point);
 
                 valueDouble = double.IsNaN(args.Statistics?.Median ?? 0d) ? 0d : args.Statistics.Median;
-                point = PointData.Measurement("imageStatsMedian")
+                point = PointData.Measurement("image_median")
                     .Field("value", valueDouble)
-                    .Tag("imagename", imgName)
+                    .Tag("image_file_name", imgName)
                     .Timestamp(imgTime, WritePrecision.Ns);
 
                 if (!string.IsNullOrEmpty(targetName)) {
-                    point.Tag("targetname", targetName);
+                    point.Tag("target_name", targetName);
                 }
                 points.Add(point);
 
                 valueDouble = double.IsNaN(args.Statistics?.StDev ?? 0d) ? 0d : args.Statistics.StDev;
-                point = PointData.Measurement("imageStatsSD")
+                point = PointData.Measurement("image_std_deviation")
                     .Field("value", valueDouble)
-                    .Tag("imagename", imgName)
+                    .Tag("image_file_name", imgName)
                     .Timestamp(imgTime, WritePrecision.Ns);
 
                 if (!string.IsNullOrEmpty(targetName)) {
-                    point.Tag("targetname", targetName);
+                    point.Tag("target_name", targetName);
                 }
                 points.Add(point);
 
                 valueDouble = double.IsNaN(args.Statistics?.MedianAbsoluteDeviation ?? 0d) ? 0d : args.Statistics.MedianAbsoluteDeviation;
-                point = PointData.Measurement("imageStatsMAD")
+                point = PointData.Measurement("image_mad")
                     .Field("value", valueDouble)
-                    .Tag("imagename", imgName)
+                    .Tag("image_file_name", imgName)
                     .Timestamp(imgTime, WritePrecision.Ns);
 
                 if (!string.IsNullOrEmpty(targetName)) {
-                    point.Tag("targetname", targetName);
+                    point.Tag("target_name", targetName);
                 }
                 points.Add(point);
 
                 valueLong = (args.Statistics?.Min < 0) ? 0 : args.Statistics.Min;
-                point = PointData.Measurement("imageStatsMinimumADU")
+                point = PointData.Measurement("image_min_adu")
                     .Field("value", valueLong)
-                    .Tag("imagename", imgName)
+                    .Tag("image_file_name", imgName)
                     .Timestamp(imgTime, WritePrecision.Ns);
 
                 if (!string.IsNullOrEmpty(targetName)) {
-                    point.Tag("targetname", targetName);
+                    point.Tag("target_name", targetName);
                 }
                 points.Add(point);
 
                 valueLong = (args.Statistics?.MinOccurrences < 0) ? 0 : args.Statistics.MinOccurrences;
-                point = PointData.Measurement("imageStatsMinimumADUcount")
+                point = PointData.Measurement("image_min_adu_count")
                     .Field("value", valueLong)
-                    .Tag("imagename", imgName)
+                    .Tag("image_file_name", imgName)
                     .Timestamp(imgTime, WritePrecision.Ns);
 
                 if (!string.IsNullOrEmpty(targetName)) {
-                    point.Tag("targetname", targetName);
+                    point.Tag("target_name", targetName);
                 }
                 points.Add(point);
 
                 valueLong = (args.Statistics?.Max < 0) ? 0 : args.Statistics.Max;
-                point = PointData.Measurement("imageStatsMaximumADU")
+                point = PointData.Measurement("image_max_adu")
                     .Field("value", valueLong)
-                    .Tag("imagename", imgName)
+                    .Tag("image_file_name", imgName)
                     .Timestamp(imgTime, WritePrecision.Ns);
 
                 if (!string.IsNullOrEmpty(targetName)) {
-                    point.Tag("targetname", targetName);
+                    point.Tag("target_name", targetName);
                 }
                 points.Add(point);
 
                 valueLong = (args.Statistics?.MaxOccurrences < 0) ? 0 : args.Statistics.MaxOccurrences;
-                point = PointData.Measurement("imageStatsMaximumADUcount")
+                point = PointData.Measurement("image_max_adu_count")
                     .Field("value", valueLong)
-                    .Tag("imagename", imgName)
+                    .Tag("image_file_name", imgName)
                     .Timestamp(imgTime, WritePrecision.Ns);
 
                 if (!string.IsNullOrEmpty(targetName)) {
-                    point.Tag("targetname", targetName);
+                    point.Tag("target_name", targetName);
                 }
                 points.Add(point);
 
                 valueDouble = double.IsNaN(args.StarDetectionAnalysis?.HFR ?? 0d) ? 0d : args.StarDetectionAnalysis.HFR;
-                point = PointData.Measurement("imageStatsHFR")
+                point = PointData.Measurement("image_hfr")
                     .Field("value", valueDouble)
-                    .Tag("imagename", imgName)
+                    .Tag("image_file_name", imgName)
                     .Timestamp(imgTime, WritePrecision.Ns);
 
                 if (!string.IsNullOrEmpty(targetName)) {
-                    point.Tag("targetname", targetName);
+                    point.Tag("target_name", targetName);
                 }
                 points.Add(point);
 
                 valueDouble = double.IsNaN(args.StarDetectionAnalysis?.HFRStDev ?? 0d) ? 0d : args.StarDetectionAnalysis.HFRStDev;
-                point = PointData.Measurement("imageStatsHFR_SD")
+                point = PointData.Measurement("image_hfr_std_deviation")
                     .Field("value", valueDouble)
-                    .Tag("imagename", imgName)
+                    .Tag("image_file_name", imgName)
                     .Timestamp(imgTime, WritePrecision.Ns);
 
                 if (!string.IsNullOrEmpty(targetName)) {
-                    point.Tag("targetname", targetName);
+                    point.Tag("target_name", targetName);
                 }
                 points.Add(point);
 
                 valueLong = (args.StarDetectionAnalysis?.DetectedStars < 0) ? 0 : args.StarDetectionAnalysis.DetectedStars;
-                point = PointData.Measurement("imageStatsStarCount")
+                point = PointData.Measurement("image_star_count")
                     .Field("value", valueLong)
-                    .Tag("imagename", imgName)
+                    .Tag("image_file_name", imgName)
                     .Timestamp(imgTime, WritePrecision.Ns);
 
                 if (!string.IsNullOrEmpty(targetName)) {
-                    point.Tag("targetname", targetName);
+                    point.Tag("target_name", targetName);
                 }
                 points.Add(point);
 
                 valueDouble = double.IsNaN(args.MetaData.Image.RecordedRMS?.RA ?? 0d) ? 0d : args.MetaData.Image.RecordedRMS.RA;
-                points.Add(PointData.Measurement("imageStatsAverageRMS_RA")
+                points.Add(PointData.Measurement("image_avg_rms_ra")
                     .Field("value", valueDouble)
-                    .Tag("imagename", imgName)
+                    .Tag("image_file_name", imgName)
                     .Timestamp(imgTime, WritePrecision.Ns));
 
                 if (!string.IsNullOrEmpty(targetName)) {
-                    point.Tag("targetname", targetName);
+                    point.Tag("target_name", targetName);
                 }
                 points.Add(point);
 
                 valueDouble = double.IsNaN(args.MetaData.Image.RecordedRMS?.Dec ?? 0d) ? 0d : args.MetaData.Image.RecordedRMS.Dec;
-                point = PointData.Measurement("imageStatsAverageRMS_Dec")
+                point = PointData.Measurement("image_avg_rms_dec")
                     .Field("value", valueDouble)
-                    .Tag("imagename", imgName)
+                    .Tag("image_file_name", imgName)
                     .Timestamp(imgTime, WritePrecision.Ns);
 
                 if (!string.IsNullOrEmpty(targetName)) {
-                    point.Tag("targetname", targetName);
+                    point.Tag("target_name", targetName);
                 }
                 points.Add(point);
 
                 valueDouble = double.IsNaN(args.MetaData.Image.RecordedRMS?.PeakRA ?? 0d) ? 0d : args.MetaData.Image.RecordedRMS.PeakRA;
-                point = PointData.Measurement("imageStatsPeakRMS_RA")
+                point = PointData.Measurement("image_peak_rms_ra")
                     .Field("value", valueDouble)
-                    .Tag("imagename", imgName)
+                    .Tag("image_file_name", imgName)
                     .Timestamp(imgTime, WritePrecision.Ns);
 
                 if (!string.IsNullOrEmpty(targetName)) {
-                    point.Tag("targetname", targetName);
+                    point.Tag("target_name", targetName);
                 }
                 points.Add(point);
 
                 valueDouble = double.IsNaN(args.MetaData.Image.RecordedRMS?.PeakDec ?? 0d) ? 0d : args.MetaData.Image.RecordedRMS.PeakDec;
-                point = PointData.Measurement("imageStatsPeakRMS_Dec")
+                point = PointData.Measurement("image_peak_rms_dec")
                     .Field("value", valueDouble)
-                    .Tag("imagename", imgName)
+                    .Tag("image_file_name", imgName)
                     .Timestamp(imgTime, WritePrecision.Ns);
 
                 if (!string.IsNullOrEmpty(targetName)) {
-                    point.Tag("targetname", targetName);
+                    point.Tag("target_name", targetName);
                 }
                 points.Add(point);
 

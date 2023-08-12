@@ -41,17 +41,17 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             double valueDouble;
 
             valueDouble = double.IsNaN(CameraInfo.Temperature) ? -1d : CameraInfo.Temperature;
-            points.Add(PointData.Measurement("cameraSensorTemp")
+            points.Add(PointData.Measurement("camera_sensor_temperature")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(CameraInfo.CoolerPower) ? -1d : CameraInfo.CoolerPower;
-            points.Add(PointData.Measurement("cameraCoolerPower")
+            points.Add(PointData.Measurement("camera_cooler_power")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             var valueInt = (CameraInfo.Battery < 0) ? -1 : CameraInfo.Battery;
-            points.Add(PointData.Measurement("cameraBatteryLevel")
+            points.Add(PointData.Measurement("camera_battery_level")
                 .Field("value", valueInt)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 

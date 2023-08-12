@@ -40,12 +40,12 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             double valueDouble = double.IsNaN(FocuserInfo.Temperature) ? -1d : FocuserInfo.Temperature;
-            points.Add(PointData.Measurement("focuserTemperature")
+            points.Add(PointData.Measurement("focuser_temperature")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             var valueInt = (FocuserInfo.Position < 0) ? -1 : FocuserInfo.Position;
-            points.Add(PointData.Measurement("focuserPostition")
+            points.Add(PointData.Measurement("focuser_postition")
                 .Field("value", valueInt)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 

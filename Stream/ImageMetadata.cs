@@ -11,15 +11,15 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.InfluxDbExporter.Interfaces;
-using InfluxDB.Client.Api.Domain;
+using DaleGhent.NINA.InfluxDbExporter.Utilities;
 using InfluxDB.Client;
+using InfluxDB.Client.Api.Domain;
+using InfluxDB.Client.Writes;
 using NINA.Core.Utility;
 using NINA.WPF.Base.Interfaces.Mediator;
 using System;
-using System.IO;
-using InfluxDB.Client.Writes;
 using System.Collections.Generic;
-using DaleGhent.NINA.InfluxDbExporter.Utilities;
+using System.IO;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
@@ -28,8 +28,8 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         private readonly IInfluxDbExporterOptions options;
 
         public ImageMetadata(IInfluxDbExporterOptions options, IImageSaveMediator imageSaveMediator) {
-            this.imageSaveMediator = imageSaveMediator;
             this.options = options;
+            this.imageSaveMediator = imageSaveMediator;
 
             this.imageSaveMediator.ImageSaved += ImageSaved;
         }
@@ -209,6 +209,17 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
                 valueDouble = double.IsNaN(args.MetaData.Image.RecordedRMS?.PeakDec ?? 0d) ? 0d : args.MetaData.Image.RecordedRMS.PeakDec;
                 point = PointData.Measurement("image_peak_rms_dec")
+                    .Field("value", valueDouble)
+                    .Tag("image_file_name", imgName)
+                    .Timestamp(imgTime, WritePrecision.Ns);
+
+                if (!string.IsNullOrEmpty(targetName)) {
+                    point.Tag("target_name", targetName);
+                }
+                points.Add(point);
+
+                valueDouble = double.IsNaN(args.MetaData.Image.RecordedRMS?.Total ?? 0d) ? 0d : args.MetaData.Image.RecordedRMS.Total;
+                point = PointData.Measurement("image_peak_rms_total")
                     .Field("value", valueDouble)
                     .Tag("image_file_name", imgName)
                     .Timestamp(imgTime, WritePrecision.Ns);

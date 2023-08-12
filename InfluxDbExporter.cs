@@ -62,7 +62,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             RotatorData.Dispose();
             SwitchData.Dispose();
             WeatherData.Dispose();
-            GuidingData.Unregister();
+            GuidingData.Dispose();
             ImageMetadata.Unregister();
 
             return base.Teardown();

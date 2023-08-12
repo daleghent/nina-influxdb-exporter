@@ -34,7 +34,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
         private void SendGuideData() {
             if (!Utilities.Utilities.ConfigCheck(this.options)) return;
-            if (GuiderInfo.Connected) { return; }
+            if (!GuiderInfo.Connected) { return; }
 
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();

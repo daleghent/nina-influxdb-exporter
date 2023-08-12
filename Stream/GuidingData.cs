@@ -42,25 +42,61 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
             valueDouble = double.IsNaN(GuiderInfo.RMSError.Dec.Arcseconds) ?
                 -1d : GuiderInfo.RMSError.Dec.Arcseconds;
-            points.Add(PointData.Measurement("guider_err_dec_arcsec")
+            points.Add(PointData.Measurement("guider_rms_dec_arcsec")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(GuiderInfo.RMSError.Dec.Pixel) ?
                 -1d : GuiderInfo.RMSError.Dec.Pixel;
-            points.Add(PointData.Measurement("guider_err_dec_pixel")
+            points.Add(PointData.Measurement("guider_rms_dec_pixel")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(GuiderInfo.RMSError.RA.Arcseconds) ?
                 -1d : GuiderInfo.RMSError.RA.Arcseconds;
-            points.Add(PointData.Measurement("guider_err_ra_arcsec")
+            points.Add(PointData.Measurement("guider_rms_ra_arcsec")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             valueDouble = double.IsNaN(GuiderInfo.RMSError.RA.Pixel) ?
                 -1d : GuiderInfo.RMSError.RA.Pixel;
-            points.Add(PointData.Measurement("guider_err_ra_pixel")
+            points.Add(PointData.Measurement("guider_rms_ra_pixel")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
+
+            valueDouble = double.IsNaN(GuiderInfo.RMSError.PeakDec.Arcseconds) ?
+                -1d : GuiderInfo.RMSError.PeakDec.Arcseconds;
+            points.Add(PointData.Measurement("guider_rms_peak_dec_arcsec")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
+
+            valueDouble = double.IsNaN(GuiderInfo.RMSError.PeakDec.Pixel) ?
+                -1d : GuiderInfo.RMSError.PeakDec.Pixel;
+            points.Add(PointData.Measurement("guider_rms_peak_dec_pixel")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
+
+            valueDouble = double.IsNaN(GuiderInfo.RMSError.PeakRA.Arcseconds) ?
+                -1d : GuiderInfo.RMSError.PeakRA.Arcseconds;
+            points.Add(PointData.Measurement("guider_rms_peak_ra_arcsec")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
+
+            valueDouble = double.IsNaN(GuiderInfo.RMSError.PeakRA.Pixel) ?
+                -1d : GuiderInfo.RMSError.PeakRA.Pixel;
+            points.Add(PointData.Measurement("guider_rms_peak_ra_pixel")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
+
+            valueDouble = double.IsNaN(GuiderInfo.RMSError.Total.Arcseconds) ?
+                -1d : GuiderInfo.RMSError.PeakRA.Arcseconds;
+            points.Add(PointData.Measurement("guider_rms_total_arcsec")
+                .Field("value", valueDouble)
+                .Timestamp(timeStamp, WritePrecision.Ns));
+
+            valueDouble = double.IsNaN(GuiderInfo.RMSError.Total.Pixel) ?
+                -1d : GuiderInfo.RMSError.Total.Pixel;
+            points.Add(PointData.Measurement("guider_rms_total_pixel")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 

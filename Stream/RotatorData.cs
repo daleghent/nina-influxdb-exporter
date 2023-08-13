@@ -40,12 +40,12 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
             float valueFloat;
 
-            valueFloat = float.IsNaN(RotatorInfo.MechanicalPosition) ? -1f : RotatorInfo.MechanicalPosition;
+            valueFloat = float.IsNaN(RotatorInfo.MechanicalPosition) ? 0f : RotatorInfo.MechanicalPosition;
             points.Add(PointData.Measurement("rotator_mechanical_angle")
                 .Field("value", valueFloat)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
-            valueFloat = float.IsNaN(RotatorInfo.Position) ? -1f : RotatorInfo.Position;
+            valueFloat = float.IsNaN(RotatorInfo.Position) ? 0f : RotatorInfo.Position;
             points.Add(PointData.Measurement("rotator_angle")
                 .Field("value", valueFloat)
                 .Timestamp(timeStamp, WritePrecision.Ns));

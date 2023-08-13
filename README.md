@@ -4,7 +4,14 @@ The **InfluxDB Exporter** plugin transmits various equipment and image metrics t
 
 Metrics are provided by class of equipment and the statistics of each saved image. For equipment, metrics for each class are sent each time N.I.N.A. polls the hardware for its status. This also means that only connected hardware will have statistics transmitted. Certain metrics will also have tags associated with them.
 
+Global tags, applied to all metrics:
+* `profile_name`: The name of the active N.I.N.A. profile
+* `host_name`: The name of the computer
+
 ### Camera
+
+Additional tags:
+* `camera_name`: The name of the connected canera device
 
 | Metric | Definition | Type |
 | ------ | ---------- | ---- |
@@ -14,12 +21,18 @@ Metrics are provided by class of equipment and the statistics of each saved imag
 
 ### Focuser
 
+Additional tags:
+* `focuser_name`: The name of the connected focuser device
+
 | Metric | Definition | Type |
 | ------ | ---------- | ---- |
 | `focuser_temperature` | Focuser's temperature sensor in °C | double 
 | `focuser_position` | Step number/position reported by focuser | integer |
 
 ### Guider
+
+Additional tags:
+* `guider_name`: The name of the connected guiding device
 
 | Metric | Definition | Type |
 | ------ | ---------- | ---- |
@@ -38,12 +51,18 @@ Metrics are provided by class of equipment and the statistics of each saved imag
 
 ### Mount
 
+Additional tags:
+* `mount_name`: The name of the connected mount device
+
 | Metric | Definition | Type |
 | ------ | ---------- | ---- |
 | `mount_altitude` | Altitude in degrees | double |
 | `mount_azimuth` | Azimuth in degrees | double |
 
 ### Rotator
+
+Additional tags:
+* `rotator_name`: The name of the connected rotator device
 
 | Metric | Definition | Type |
 | ------ | ---------- | ---- |
@@ -52,6 +71,9 @@ Metrics are provided by class of equipment and the statistics of each saved imag
 
 ### Switches
 
+Additional tags:
+* `guider_name`: The name of the connected guiding device
+
 | Metric | Definition | Type |
 | ------ | ---------- | ---- |
 | `switch_ro_sw<ID>` | Value of gauge (read-only switch) identified by the appended numeric identifier | double |
@@ -59,6 +81,9 @@ Metrics are provided by class of equipment and the statistics of each saved imag
 Each swtich metric is tagged with the human-readable name associated with the switch's ID.
 
 ### Weather
+
+Additional tags:
+* `wx_device_name`: The name of the connected weather/observing conditions device
 
 | Metric | Definition | Type |
 | ------ | ---------- | ---- |
@@ -80,7 +105,7 @@ Each swtich metric is tagged with the human-readable name associated with the sw
 
 Statistics are produced only for images of type `LIGHT`. Calibration frames and snapshots are not processed. Statistics must be on for many of these metrics to be sent.
 
-All `image_*` metrics are tagged with up to two tags:
+Additional tags:
 * `image_file_name`: Name of the image file associated with these metrics.
 * `target_name`: Name of the target imaged as defined in the sequencer's target field. This tag is omitted if no target name is defined.
 * `sequence_title`: The title or name of the running sequence

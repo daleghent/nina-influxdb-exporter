@@ -17,7 +17,7 @@ Metrics are provided by class of equipment and the statistics of each saved imag
 | Metric | Definition | Type |
 | ------ | ---------- | ---- |
 | `focuser_temperature` | Focuser's temperature sensor in °C | double 
-| `focuser_postition` | Step number/position reported by focuser | integer |
+| `focuser_position` | Step number/position reported by focuser | integer |
 
 ### Guider
 

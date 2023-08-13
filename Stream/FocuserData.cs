@@ -45,7 +45,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             var valueInt = (FocuserInfo.Position < 0) ? -1 : FocuserInfo.Position;
-            points.Add(PointData.Measurement("focuser_postition")
+            points.Add(PointData.Measurement("focuser_position")
                 .Field("value", valueInt)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 

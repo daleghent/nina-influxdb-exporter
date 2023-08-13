@@ -157,6 +157,14 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                     fullOptions.AddDefaultTag("sequence_title", args.MetaData.Sequence.Title);
                 }
 
+                if (!string.IsNullOrEmpty(args.MetaData.Camera.Name)) {
+                    fullOptions.AddDefaultTag("camera_name", args.MetaData.Camera.Name);
+                }
+
+                if (!string.IsNullOrEmpty(args.MetaData.Camera.ReadoutModeName)) {
+                    fullOptions.AddDefaultTag("readout_mode", args.MetaData.Camera.ReadoutModeName);
+                }
+
                 using var client = new InfluxDBClient(fullOptions);
                 using var writeApi = client.GetWriteApi();
                 writeApi.EventHandler += WriteEventHandler.WriteEvent;

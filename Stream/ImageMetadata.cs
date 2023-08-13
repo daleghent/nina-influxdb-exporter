@@ -40,7 +40,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
                 var imgName = args.PathToImage.LocalPath;
 
-                if (!options.SaveFullImagePath) {
+                if (!options.TagFullImagePath) {
                     imgName = Path.GetFileName(imgName);
                 }
 
@@ -163,6 +163,14 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
                 if (!string.IsNullOrEmpty(args.MetaData.Camera.ReadoutModeName)) {
                     fullOptions.AddDefaultTag("readout_mode", args.MetaData.Camera.ReadoutModeName);
+                }
+
+                if (options.TagProfileName) {
+                    fullOptions.AddDefaultTag("profile_name", options.ProfileName);
+                }
+
+                if (options.TagHostname) {
+                    fullOptions.AddDefaultTag("host_name", options.Hostname);
                 }
 
                 using var client = new InfluxDBClient(fullOptions);

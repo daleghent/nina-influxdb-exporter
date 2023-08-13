@@ -18,6 +18,11 @@ namespace DaleGhent.NINA.InfluxDbExporter.Interfaces {
         string InfluxDbBucket { get; set; }
         string InfluxDbOrgId { get; set; }
         string InfluxDbToken { get; set; }
-        bool SaveFullImagePath { get; set; }
+        bool TagFullImagePath { get; set; }
+        bool TagHostname { get; set; }
+        bool TagProfileName { get; set; }
+        bool TagEquipmentName { get; set; }
+        string Hostname { get; }
+        string ProfileName { get; }
     }
 }

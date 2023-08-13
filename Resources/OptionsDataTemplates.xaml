@@ -14,89 +14,159 @@
     mc:Ignorable="d">
 
     <DataTemplate x:Key="InfluxDB_Exporter_Options">
-        <StackPanel Orientation="Vertical" Margin="0,10,0,0">
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                <TextBlock
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Right"
-                    Width="110">
-                    <TextBlock.Text>InfluxDB URL</TextBlock.Text>
-                    <TextBlock.ToolTip>The application key assigned for NINA</TextBlock.ToolTip>
-                </TextBlock>
-                <TextBox
-                    Margin="5,0,0,0"
-                    Width="400"
-                    VerticalAlignment="Center"
-                    VerticalContentAlignment="Center">
-                    <TextBox.Text>
-                        <Binding Path="InfluxDbUrl" />
-                    </TextBox.Text>
-                </TextBox>
-            </StackPanel>
+        <StackPanel Orientation="Vertical">
+            <TabControl>
+                <TabItem Header="Server Settings">
+                    <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Width="110">
+                                <TextBlock.Text>InfluxDB URL</TextBlock.Text>
+                                <TextBlock.ToolTip>The application key assigned for NINA</TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                Margin="5,0,0,0"
+                                Width="400"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="InfluxDbUrl" />
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
 
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                <TextBlock
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Right"
-                    Width="110">
-                    <TextBlock.Text>Token</TextBlock.Text>
-                    <TextBlock.ToolTip>InfluxDB 2.x access token</TextBlock.ToolTip>
-                </TextBlock>
-                <PasswordBox
-                    Margin="5,0,0,0"
-                    Width="400"
-                    Height="20"
-                    VerticalAlignment="Top"
-                    VerticalContentAlignment="Center"
-                    BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0"
-                    CaretBrush="{StaticResource PrimaryBrush}"
-                    Foreground="{StaticResource PrimaryBrush}"
-                    Loaded="PasswordBox_InfluxDbToken_Loaded"
-                    PasswordChanged="PasswordBox_InfluxDbToken_PasswordChanged">
-                    <PasswordBox.Background>
-                        <SolidColorBrush Opacity="0.05" Color="{Binding Color, Source={StaticResource PrimaryBrush}}" />
-                    </PasswordBox.Background>
-                </PasswordBox>
-            </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Width="110">
+                                <TextBlock.Text>Token</TextBlock.Text>
+                                <TextBlock.ToolTip>InfluxDB 2.x access token</TextBlock.ToolTip>
+                            </TextBlock>
+                            <PasswordBox
+                                Margin="5,0,0,0"
+                                Width="400"
+                                Height="20"
+                                VerticalAlignment="Top"
+                                VerticalContentAlignment="Center"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0"
+                                CaretBrush="{StaticResource PrimaryBrush}"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                Loaded="PasswordBox_InfluxDbToken_Loaded"
+                                PasswordChanged="PasswordBox_InfluxDbToken_PasswordChanged">
+                                <PasswordBox.Background>
+                                    <SolidColorBrush Opacity="0.05" Color="{Binding Color, Source={StaticResource PrimaryBrush}}" />
+                                </PasswordBox.Background>
+                            </PasswordBox>
+                        </StackPanel>
 
-            <StackPanel Orientation="Horizontal" Margin="0,15,0,5">
-                <TextBlock
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Right"
-                    Width="110">
-                    <TextBlock.Text>Bucket</TextBlock.Text>
-                    <TextBlock.ToolTip>The bucket to send metrics to</TextBlock.ToolTip>
-                </TextBlock>
-                <TextBox
-                    Margin="5,0,0,0"
-                    Width="400"
-                    VerticalAlignment="Center"
-                    VerticalContentAlignment="Center">
-                    <TextBox.Text>
-                        <Binding Path="InfluxDbBucket" />
-                    </TextBox.Text>
-                </TextBox>
-            </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,15,0,5">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Width="110">
+                                <TextBlock.Text>Bucket</TextBlock.Text>
+                                <TextBlock.ToolTip>The bucket to send metrics to</TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                Margin="5,0,0,0"
+                                Width="400"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="InfluxDbBucket" />
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
 
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                <TextBlock
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Right"
-                    Width="110">
-                    <TextBlock.Text>Org ID</TextBlock.Text>
-                    <TextBlock.ToolTip>The InfuxDB Org ID to use</TextBlock.ToolTip>
-                </TextBlock>
-                <TextBox
-                    Margin="5,0,0,0"
-                    Width="400"
-                    VerticalAlignment="Center"
-                    VerticalContentAlignment="Center">
-                    <TextBox.Text>
-                        <Binding Path="InfluxDbOrgId" />
-                    </TextBox.Text>
-                </TextBox>
-            </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Width="110">
+                                <TextBlock.Text>Org ID</TextBlock.Text>
+                                <TextBlock.ToolTip>The InfuxDB Org ID to use</TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                Margin="5,0,0,0"
+                                Width="400"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="InfluxDbOrgId" />
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                    </StackPanel>
+                </TabItem>
+
+                <TabItem Header="Tagging Options">
+                    <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Width="150">
+                                <TextBlock.Text>Tag with hostname</TextBlock.Text>
+                                <TextBlock.ToolTip>Tags all metrics with the computer's host name.</TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                IsChecked="{Binding TagHostname}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Width="150">
+                                <TextBlock.Text>Tag with Profile name</TextBlock.Text>
+                                <TextBlock.ToolTip>Tags all metrics with the name of the active N.I.N.A. profile</TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                IsChecked="{Binding TagProfileName}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Width="150">
+                                <TextBlock.Text>Tag with equipment name</TextBlock.Text>
+                                <TextBlock.ToolTip>Tags all equipment metrics with the associated name of the device or driver that N.I.N.A. is connected to</TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                IsChecked="{Binding TagEquipmentName}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Width="150">
+                                <TextBlock.Text>Tag full image path</TextBlock.Text>
+                                <TextBlock.ToolTip>Turning this on will tag image metrics with the full path of the image file name instead of just the file name. This may create a very long tag value.</TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                IsChecked="{Binding TagFullImagePath}" />
+                        </StackPanel>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
         </StackPanel>
     </DataTemplate>
 </ResourceDictionary>

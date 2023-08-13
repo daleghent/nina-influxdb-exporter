@@ -23,6 +23,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
     public class InfluxDbExporterOptions : BaseINPC, IInfluxDbExporterOptions {
         private readonly IProfileService profileService;
         private readonly IPluginOptionsAccessor pluginOptionsAccessor;
+        private readonly string hostname;
 
         public InfluxDbExporterOptions(IProfileService profileService) {
             this.profileService = profileService;
@@ -34,6 +35,8 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             }
 
             this.pluginOptionsAccessor = new PluginOptionsAccessor(this.profileService, guid.Value);
+
+            hostname = Environment.MachineName;
         }
 
         public string InfluxDbUrl {
@@ -68,13 +71,40 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             }
         }
 
-        public bool SaveFullImagePath {
-            get => pluginOptionsAccessor.GetValueBoolean(nameof(SaveFullImagePath), false);
+        public bool TagFullImagePath {
+            get => pluginOptionsAccessor.GetValueBoolean(nameof(TagFullImagePath), false);
             set {
-                pluginOptionsAccessor.SetValueBoolean(nameof(SaveFullImagePath), value);
+                pluginOptionsAccessor.SetValueBoolean(nameof(TagFullImagePath), value);
                 RaisePropertyChanged();
             }
         }
+
+        public bool TagHostname {
+            get => pluginOptionsAccessor.GetValueBoolean(nameof(TagHostname), true);
+            set {
+                pluginOptionsAccessor.SetValueBoolean(nameof(TagHostname), value);
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool TagProfileName {
+            get => pluginOptionsAccessor.GetValueBoolean(nameof(TagProfileName), true);
+            set {
+                pluginOptionsAccessor.SetValueBoolean(nameof(TagProfileName), value);
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool TagEquipmentName {
+            get => pluginOptionsAccessor.GetValueBoolean(nameof(TagEquipmentName), true);
+            set {
+                pluginOptionsAccessor.SetValueBoolean(nameof(TagEquipmentName), value);
+                RaisePropertyChanged();
+            }
+        }
+
+        public string Hostname => hostname;
+        public string ProfileName => profileService.ActiveProfile?.Name;
 
         public void SetInfluxDbToken(SecureString s) {
             InfluxDbToken = SecureStringToString(s);

@@ -105,7 +105,24 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
-            using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbToken);
+            // Send the points
+            var fullOptions = new InfluxDBClientOptions(options.InfluxDbUrl) {
+                Token = options.InfluxDbToken,
+            };
+
+            if (options.TagProfileName) {
+                fullOptions.AddDefaultTag("profile_name", options.ProfileName);
+            }
+
+            if (options.TagHostname) {
+                fullOptions.AddDefaultTag("host_name", options.Hostname);
+            }
+
+            if (options.TagEquipmentName) {
+                fullOptions.AddDefaultTag("wx_driver_name", WeatherDataInfo.Name);
+            }
+
+            using var client = new InfluxDBClient(fullOptions);
             using var writeApi = client.GetWriteApi();
             writeApi.EventHandler += WriteEventHandler.WriteEvent;
             writeApi.WritePoints(points, options.InfluxDbBucket, options.InfluxDbOrgId);

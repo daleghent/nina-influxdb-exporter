@@ -17,6 +17,7 @@ using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Profile.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -55,7 +56,24 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 .Field("value", valueInt)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
-            using var client = new InfluxDBClient(options.InfluxDbUrl, options.InfluxDbToken);
+            // Send the points
+            var fullOptions = new InfluxDBClientOptions(options.InfluxDbUrl) {
+                Token = options.InfluxDbToken,
+            };
+
+            if (options.TagProfileName) {
+                fullOptions.AddDefaultTag("profile_name", options.ProfileName);
+            }
+
+            if (options.TagHostname) {
+                fullOptions.AddDefaultTag("host_name", options.Hostname);
+            }
+
+            if (options.TagEquipmentName) {
+                fullOptions.AddDefaultTag("camera_name", CameraInfo.Name);
+            }
+
+            using var client = new InfluxDBClient(fullOptions);
             using var writeApi = client.GetWriteApi();
             writeApi.EventHandler += WriteEventHandler.WriteEvent;
             writeApi.WritePoints(points, options.InfluxDbBucket, options.InfluxDbOrgId);

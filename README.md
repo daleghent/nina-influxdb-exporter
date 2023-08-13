@@ -23,16 +23,18 @@ Metrics are provided by class of equipment and the statistics of each saved imag
 
 | Metric | Definition | Type |
 | ------ | ---------- | ---- |
-| `guider_rms_dec_arcsec` | Declination RMS in arcseconds | double |
-| `guider_rms_dec_pixel` | Declination RMS in pixels | double |
 | `guider_rms_ra_arcsec` | RA RMS in arcseconds | double |
+| `guider_rms_dec_arcsec` | Declination RMS in arcseconds | double |
+| `guider_rms_arcsec` | Comined RMS in arcseconds | double |
 | `guider_rms_ra_pixel` | RA RMS in pixels | double |
-| `guider_rms_peak_dec_arcsec` | Declination peak RMS in arcseconds | double |
-| `guider_rms_peak_dec_pixel` | Declination peak RMS in pixels | double |
+| `guider_rms_dec_pixel` | Declination RMS in pixels | double |
+| `guider_rms_pixel` | Combined RMS in pixels | double |
 | `guider_rms_peak_ra_arcsec` | RA peak RMS in arcseconds | double |
+| `guider_rms_peak_dec_arcsec` | Declination peak RMS in arcseconds | double |
+| `guider_rms_peak_arcsec` | Combined peak RMS in arcseconds | double |
 | `guider_rms_peak_ra_pixel` | RA peak RMS in arcseconds | double |
-| `guider_rms_total_arcsec` | Total axis RMS in arcseconds | double |
-| `guider_rms_total_pixel` | Total axis RMS in pixels | double |
+| `guider_rms_peak_dec_pixel` | Declination peak RMS in pixels | double |
+| `guider_rms_peak_pixel` | Combined peak RMS in pixels | double |
 
 ### Mount
 
@@ -52,7 +54,9 @@ Metrics are provided by class of equipment and the statistics of each saved imag
 
 | Metric | Definition | Type |
 | ------ | ---------- | ---- |
-| `switch_ro_sw<ID>` | Value of gauge (read-only switch) identified by the appended numeric identifier | double | `name` - The human-readable name of the switch |
+| `switch_ro_sw<ID>` | Value of gauge (read-only switch) identified by the appended numeric identifier | double |
+
+Each swtich metric is tagged with the human-readable name associated with the switch's ID.
 
 ### Weather
 
@@ -93,12 +97,14 @@ All `image_*` metrics are tagged with up to two tags:
 | `image_hfr` | Average star HFR | double |
 | `image_hfr_std_deviation` | Standard deviation of measured stars' HFR | double |
 | `image_star_count` | Count of stars in the image | integer |
-| `image_avg_rms_ra` | Average guiding RMS of the RA axis during image exposure  | double |
-| `image_avg_rms_dec` | Average guiding RMS of the declination axis during image exposure | double |
-| `image_peak_rms_ra` | Peak guiding RMS of the RA axis during image exposure | double |
-| `image_peak_rms_dec` | Peak guiding RMS of the declination axis during image exposure  | double |
-| `image_peak_rms_total` | Peak total RMS of the axes during image exposure | double |
+| `image_rms_avg_ra_arcsec` | Average guiding RMS of the RA axis during image exposure  | double |
+| `image_rms_avg_dec_arcsec` | Average guiding RMS of the declination axis during image exposure | double |
+| `image_rms_avg_arcsec` | Combined average RMS during image exposure | double |
+| `image_rms_peak_ra_arcsec` | Peak guiding RMS of the RA axis during image exposure | double |
+| `image_rms_peak_dec_arcsec` | Peak guiding RMS of the declination axis during image exposure  | double |
+| `image_rms_peak_arcsec` | Combined peak RMS during image exposure | double |
 
 # Getting help #
 
-Help for this plugin may be found in the **#plugin-discussions** channel on the NINA project [Discord chat server](https://discord.gg/nighttime-imaging) or by filing an issue report at this plugin's [Github repository](https://github.com/daleghent/nina-influxdb-exporter/issues).
+Help for this plugin may be found in the **#plugin-discussions** channel on the NINA project [Discord chat server](https://discord.gg/nighttime-imaging) or by filing an issue report at this plugin's [Github repository](https://github.com/daleghent/nina-influxdb-exporter/issues).**
+**

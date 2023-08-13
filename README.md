@@ -83,6 +83,7 @@ Statistics are produced only for images of type `LIGHT`. Calibration frames and 
 All `image_*` metrics are tagged with up to two tags:
 * `image_file_name`: Name of the image file associated with these metrics.
 * `target_name`: Name of the target imaged as defined in the sequencer's target field. This tag is omitted if no target name is defined.
+* `sequence_title`: The title or name of the running sequence
 
 | Metric | Definition | Type |
 | ------ | ---------- | ---- |

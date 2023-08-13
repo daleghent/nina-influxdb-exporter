@@ -153,6 +153,10 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                     fullOptions.AddDefaultTag("target_name", args.MetaData.Target.Name);
                 }
 
+                if (!string.IsNullOrEmpty(args.MetaData.Target.Name)) {
+                    fullOptions.AddDefaultTag("sequence_title", args.MetaData.Sequence.Title);
+                }
+
                 using var client = new InfluxDBClient(fullOptions);
                 using var writeApi = client.GetWriteApi();
                 writeApi.EventHandler += WriteEventHandler.WriteEvent;

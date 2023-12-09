@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0-windows10.0.17763.0</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>DaleGhent.NINA.InfluxDbExporter</RootNamespace>
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
@@ -16,10 +16,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="InfluxDB.Client">
-      <Version>4.14.0-dev.11972</Version>
+      <Version>4.15.0-dev.12726</Version>
     </PackageReference>
     <PackageReference Include="NINA.Plugin">
-      <Version>3.0.0.1032-nightly</Version>
+      <Version>3.0.0.1085-nightly</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -37,6 +37,6 @@
   </ItemGroup>
   <PropertyGroup />
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if not exist &quot;%25localappdata%25\NINA\Plugins&quot; (&#xD;&#xA;   echo &quot;Creating $(PlatformName) Plugins folder&quot;&#xD;&#xA;   mkdir  &quot;%25localappdata%25\NINA\Plugins&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;if not exist &quot;%25localappdata%25\NINA\Plugin\$(TargetName)&quot; (&#xD;&#xA;   echo &quot;Creating $(PlatformName) Plugins $(TargetName) folder&quot;&#xD;&#xA;   mkdir  &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;echo &quot;Copying $(PlatformName) $(TargetFileName)&quot;&#xD;&#xA;xcopy &quot;$(TargetPath)&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)InfluxDB.Client.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)InfluxDB.Client.Core.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)JsonSubTypes.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)System.Reactive.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)CsvHelper.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)NodaTime.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)NodaTime.Serialization.JsonNet.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)RestSharp.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)Microsoft.Extensions.ObjectPool.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y" />
+    <Exec Command="if not exist &quot;%25localappdata%25\NINA\Plugins&quot; (&#xD;&#xA;   echo &quot;Creating $(PlatformName) Plugins folder&quot;&#xD;&#xA;   mkdir  &quot;%25localappdata%25\NINA\Plugins&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;if not exist &quot;%25localappdata%25\NINA\Plugin\$(TargetName)&quot; (&#xD;&#xA;   echo &quot;Creating $(PlatformName) Plugins $(TargetName) folder&quot;&#xD;&#xA;   mkdir  &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;echo &quot;Copying $(PlatformName) $(TargetFileName)&quot;&#xD;&#xA;xcopy &quot;$(TargetPath)&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)InfluxDB.Client.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)InfluxDB.Client.Core.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)JsonSubTypes.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)System.Reactive.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)CsvHelper.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)NodaTime.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)NodaTime.Serialization.JsonNet.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)RestSharp.dll&quot; &quot;%25localappdata%25\NINA\Plugins\$(TargetName)&quot; /h/i/c/k/e/r/y" />
   </Target>
 </Project>

@@ -15,6 +15,7 @@ using DaleGhent.NINA.InfluxDbExporter.Utilities;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
+using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Profile.Interfaces;
@@ -33,7 +34,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             this.cameraMediator.RegisterConsumer(this);
         }
 
-        private void SendCameraInfo() {
+        private async void SendCameraInfo() {
             if (!Utilities.Utilities.ConfigCheck(this.options)) return;
             if (!CameraInfo.Connected) return;
 
@@ -74,11 +75,13 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             }
 
             using var client = new InfluxDBClient(fullOptions);
-            using var writeApi = client.GetWriteApi();
-            writeApi.EventHandler += WriteEventHandler.WriteEvent;
-            writeApi.WritePoints(points, options.InfluxDbBucket, options.InfluxDbOrgId);
-            writeApi.Flush();
-            writeApi.Dispose();
+
+            try {
+                var writeApi = client.GetWriteApiAsync();
+                await writeApi.WritePointsAsync(points, options.InfluxDbBucket, options.InfluxDbOrgId);
+            } catch (Exception ex) {
+                Logger.Error($"Failed to write camera points: {ex.Message}");
+            }
         }
 
         private CameraInfo CameraInfo { get; set; }

@@ -15,6 +15,7 @@ using DaleGhent.NINA.InfluxDbExporter.Utilities;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
+using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyWeatherData;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
@@ -32,7 +33,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             this.weatherDataMediator.RegisterConsumer(this);
         }
 
-        private void SendWeatherData() {
+        private async void SendWeatherData() {
             if (!Utilities.Utilities.ConfigCheck(this.options)) return;
             if (!WeatherDataInfo.Connected) return;
 
@@ -108,6 +109,8 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             // Send the points
             var fullOptions = new InfluxDBClientOptions(options.InfluxDbUrl) {
                 Token = options.InfluxDbToken,
+                Bucket = options.InfluxDbBucket,
+                Org = options.InfluxDbOrgId,
             };
 
             if (options.TagProfileName) {
@@ -123,11 +126,13 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             }
 
             using var client = new InfluxDBClient(fullOptions);
-            using var writeApi = client.GetWriteApi();
-            writeApi.EventHandler += WriteEventHandler.WriteEvent;
-            writeApi.WritePoints(points, options.InfluxDbBucket, options.InfluxDbOrgId);
-            writeApi.Flush();
-            writeApi.Dispose();
+
+            try {
+                var writeApi = client.GetWriteApiAsync();
+                await writeApi.WritePointsAsync(points);
+            } catch (Exception ex) {
+                Logger.Error($"Failed to write weather points: {ex.Message}");
+            }
         }
 
         private WeatherDataInfo WeatherDataInfo { get; set; }

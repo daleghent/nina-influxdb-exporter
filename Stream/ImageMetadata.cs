@@ -34,7 +34,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             this.imageSaveMediator.ImageSaved += ImageSaved;
         }
 
-        private void ImageSaved(object sender, ImageSavedEventArgs args) {
+        private async void ImageSaved(object sender, ImageSavedEventArgs args) {
             try {
                 if (!Utilities.Utilities.ConfigCheck(this.options)) return;
 
@@ -145,6 +145,8 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 // Send the points
                 var fullOptions = new InfluxDBClientOptions(options.InfluxDbUrl) {
                     Token = options.InfluxDbToken,
+                    Bucket = options.InfluxDbBucket,
+                    Org = options.InfluxDbOrgId,
                 };
 
                 fullOptions.AddDefaultTag("image_file_name", imgName);
@@ -174,11 +176,13 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 }
 
                 using var client = new InfluxDBClient(fullOptions);
-                using var writeApi = client.GetWriteApi();
-                writeApi.EventHandler += WriteEventHandler.WriteEvent;
-                writeApi.WritePoints(points, options.InfluxDbBucket, options.InfluxDbOrgId);
-                writeApi.Flush();
-                writeApi.Dispose();
+
+                try {
+                    var writeApi = client.GetWriteApiAsync();
+                    await writeApi.WritePointsAsync(points);
+                } catch (Exception ex) {
+                    Logger.Error($"Failed to write image points: {ex.Message}");
+                }
             } catch (Exception ex) {
                 Logger.Error(ex);
             }

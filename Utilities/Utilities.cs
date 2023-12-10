@@ -18,6 +18,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Utilities {
 
         public static bool ConfigCheck(IInfluxDbExporterOptions options) {
             if (options == null) { return false; }
+            if (!options.AuthWorks) { return false; }
             if (string.IsNullOrEmpty(options.InfluxDbUrl)) { return false; }
             if (string.IsNullOrEmpty(options.InfluxDbBucket)) { return false; }
             if (string.IsNullOrEmpty(options.InfluxDbToken)) { return false; }

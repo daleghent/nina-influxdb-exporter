@@ -175,6 +175,21 @@
                                 Width="150"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center">
+                                <TextBlock.Text>Tag image name</TextBlock.Text>
+                                <TextBlock.ToolTip>Turning this on will tag image metrics with the image file name.</TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                IsChecked="{Binding TagImageFileName}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="150"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
                                 <TextBlock.Text>Tag full image path</TextBlock.Text>
                                 <TextBlock.ToolTip>Turning this on will tag image metrics with the full path of the image file name instead of just the file name. This may create a very long tag value.</TextBlock.ToolTip>
                             </TextBlock>
@@ -182,6 +197,7 @@
                                 Margin="5,0,0,0"
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
+                                IsEnabled="{Binding TagImageFileName}"
                                 IsChecked="{Binding TagFullImagePath}" />
                         </StackPanel>
                     </StackPanel>

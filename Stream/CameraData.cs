@@ -24,7 +24,7 @@ using System.Collections.Generic;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
-    public class CameraData : ICameraConsumer {
+    public partial class CameraData : ICameraConsumer {
         private readonly IInfluxDbExporterOptions options;
         private readonly ICameraMediator cameraMediator;
 
@@ -93,6 +93,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
         public void Dispose() {
             cameraMediator.RemoveConsumer(this);
+            GC.SuppressFinalize(this);
         }
     }
 }

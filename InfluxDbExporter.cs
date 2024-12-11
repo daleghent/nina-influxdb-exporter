@@ -17,6 +17,7 @@ using NINA.Plugin;
 using NINA.Plugin.Interfaces;
 using NINA.Profile.Interfaces;
 using NINA.WPF.Base.Interfaces.Mediator;
+using System;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using Settings = DaleGhent.NINA.InfluxDbExporter.Properties.Settings;
@@ -52,6 +53,14 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             SwitchData ??= new(InfluxDbExporterOptions, switchMediator);
             WeatherData ??= new(InfluxDbExporterOptions, weatherDataMediator);
             ImageMetadata ??= new(InfluxDbExporterOptions, imageSaveMediator);
+        }
+
+        public override async Task Initialize() {
+            try {
+                await InfluxDbExporterOptions.CheckAuth();
+            } catch (Exception ex) {
+                Logger.Debug($"Failed to check auth on startup: {ex.Message}");
+            }
         }
 
         public override Task Teardown() {

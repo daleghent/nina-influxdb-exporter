@@ -11,10 +11,10 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.InfluxDbExporter.Interfaces;
-using DaleGhent.NINA.InfluxDbExporter.Utilities;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
+using NINA.Core.Interfaces;
 using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyGuider;
 using NINA.Equipment.Interfaces.Mediator;
@@ -23,17 +23,19 @@ using System.Collections.Generic;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
-    public class GuidingData : IGuiderConsumer {
+    public partial class GuidingData : IGuiderConsumer {
         private readonly IInfluxDbExporterOptions options;
         private readonly IGuiderMediator guiderMediator;
 
         public GuidingData(IInfluxDbExporterOptions options, IGuiderMediator guiderMediator) {
             this.options = options;
             this.guiderMediator = guiderMediator;
+
             this.guiderMediator.RegisterConsumer(this);
+            this.guiderMediator.GuideEvent += OnGuideEvent;
         }
 
-        private async void SendGuideData() {
+        private async void SendGuideData(IGuideStep guideStep) {
             if (!Utilities.Utilities.ConfigCheck(this.options)) return;
             if (!GuiderInfo.Connected) { return; }
 
@@ -61,7 +63,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
-            valueDouble = double.IsNaN(GuiderInfo.RMSError.Total.Arcseconds) ? 0d : GuiderInfo.RMSError.PeakRA.Arcseconds;
+            valueDouble = double.IsNaN(GuiderInfo.RMSError.Total.Arcseconds) ? 0d : GuiderInfo.RMSError.Total.Arcseconds;
             points.Add(PointData.Measurement("guider_rms_arcsec")
                 .Field("value", valueDouble)
                 .Timestamp(timeStamp, WritePrecision.Ns));
@@ -90,7 +92,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             points.Add(PointData.Measurement("guider_rms_peak_arcsec")
-                .Field("value", rmsPeakDec)
+                .Field("value", rmsPeakTotal)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             rmsPeakRA = 0d;
@@ -148,11 +150,16 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
         public void UpdateDeviceInfo(GuiderInfo deviceInfo) {
             GuiderInfo = deviceInfo;
-            SendGuideData();
+        }
+
+        public void OnGuideEvent(object sender, IGuideStep guideStep) {
+            SendGuideData(guideStep);
         }
 
         public void Dispose() {
+            guiderMediator.GuideEvent -= OnGuideEvent;
             guiderMediator.RemoveConsumer(this);
+            GC.SuppressFinalize(this);
         }
     }
 }

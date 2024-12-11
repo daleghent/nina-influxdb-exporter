@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.InfluxDbExporter {
 
-    public class InfluxDbExporterOptions : BaseINPC, IInfluxDbExporterOptions {
+    public partial class InfluxDbExporterOptions : BaseINPC, IInfluxDbExporterOptions {
         private readonly IProfileService profileService;
         private readonly PluginOptionsAccessor pluginOptionsAccessor;
         private readonly string hostname;
@@ -76,6 +76,14 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             }
         }
 
+        public bool TagImageFileName {
+            get => pluginOptionsAccessor.GetValueBoolean(nameof(TagImageFileName), false);
+            set {
+                pluginOptionsAccessor.SetValueBoolean(nameof(TagImageFileName), value);
+                RaisePropertyChanged();
+            }
+        }
+
         public bool TagFullImagePath {
             get => pluginOptionsAccessor.GetValueBoolean(nameof(TagFullImagePath), false);
             set {
@@ -85,7 +93,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
         }
 
         public bool TagHostname {
-            get => pluginOptionsAccessor.GetValueBoolean(nameof(TagHostname), true);
+            get => pluginOptionsAccessor.GetValueBoolean(nameof(TagHostname), false);
             set {
                 pluginOptionsAccessor.SetValueBoolean(nameof(TagHostname), value);
                 RaisePropertyChanged();
@@ -93,7 +101,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
         }
 
         public bool TagProfileName {
-            get => pluginOptionsAccessor.GetValueBoolean(nameof(TagProfileName), true);
+            get => pluginOptionsAccessor.GetValueBoolean(nameof(TagProfileName), false);
             set {
                 pluginOptionsAccessor.SetValueBoolean(nameof(TagProfileName), value);
                 RaisePropertyChanged();
@@ -101,7 +109,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
         }
 
         public bool TagEquipmentName {
-            get => pluginOptionsAccessor.GetValueBoolean(nameof(TagEquipmentName), true);
+            get => pluginOptionsAccessor.GetValueBoolean(nameof(TagEquipmentName), false);
             set {
                 pluginOptionsAccessor.SetValueBoolean(nameof(TagEquipmentName), value);
                 RaisePropertyChanged();
@@ -114,7 +122,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
         public bool AuthWorks { get; private set; }
         public string AuthFailureMessage { get; private set; }
 
-        private async Task CheckAuth() {
+        public async Task CheckAuth() {
             try {
                 if (string.IsNullOrWhiteSpace(InfluxDbUrl) ||
                                        string.IsNullOrWhiteSpace(InfluxDbToken) ||

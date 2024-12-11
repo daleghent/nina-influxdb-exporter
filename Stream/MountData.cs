@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
-    public class MountData : ITelescopeConsumer {
+    public partial class MountData : ITelescopeConsumer {
         private readonly IInfluxDbExporterOptions options;
         private readonly ITelescopeMediator telescopeMediator;
 
@@ -89,6 +89,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
         public void Dispose() {
             telescopeMediator.RemoveConsumer(this);
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
-    public class RotatorData : IRotatorConsumer {
+    public partial class RotatorData : IRotatorConsumer {
         private readonly IInfluxDbExporterOptions options;
         private readonly IRotatorMediator rotatorMediator;
 
@@ -89,6 +89,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
         public void Dispose() {
             rotatorMediator.RemoveConsumer(this);
+            GC.SuppressFinalize(this);
         }
     }
 }

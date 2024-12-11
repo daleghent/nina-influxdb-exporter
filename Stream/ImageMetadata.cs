@@ -38,12 +38,6 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             try {
                 if (!Utilities.Utilities.ConfigCheck(this.options)) return;
 
-                var imgName = args.PathToImage.LocalPath;
-
-                if (!options.TagFullImagePath) {
-                    imgName = Path.GetFileName(imgName);
-                }
-
                 var points = new List<PointData>();
                 double valueDouble;
                 long valueLong;
@@ -149,13 +143,21 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                     Org = options.InfluxDbOrgId,
                 };
 
-                fullOptions.AddDefaultTag("image_file_name", imgName);
+                if (options.TagImageFileName) {
+                    var imgName = args.PathToImage.LocalPath;
+
+                    if (!options.TagFullImagePath) {
+                        imgName = Path.GetFileName(imgName);
+                    }
+
+                    fullOptions.AddDefaultTag("image_file_name", imgName);
+                }
 
                 if (!string.IsNullOrEmpty(args.MetaData.Target.Name)) {
                     fullOptions.AddDefaultTag("target_name", args.MetaData.Target.Name);
                 }
 
-                if (!string.IsNullOrEmpty(args.MetaData.Target.Name)) {
+                if (!string.IsNullOrEmpty(args.MetaData.Sequence.Title)) {
                     fullOptions.AddDefaultTag("sequence_title", args.MetaData.Sequence.Title);
                 }
 

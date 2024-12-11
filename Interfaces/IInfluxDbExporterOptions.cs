@@ -18,6 +18,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Interfaces {
         string InfluxDbBucket { get; set; }
         string InfluxDbOrgId { get; set; }
         string InfluxDbToken { get; set; }
+        bool TagImageFileName { get; set; }
         bool TagFullImagePath { get; set; }
         bool TagHostname { get; set; }
         bool TagProfileName { get; set; }

@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
-    public class SwitchData : ISwitchConsumer {
+    public partial class SwitchData : ISwitchConsumer {
         private readonly IInfluxDbExporterOptions options;
         private readonly ISwitchMediator switchMediator;
 
@@ -90,7 +90,8 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         }
 
         public void Dispose() {
-            switchMediator.RegisterConsumer(this);
+            switchMediator.RemoveConsumer(this);
+            GC.SuppressFinalize(this);
         }
     }
 }

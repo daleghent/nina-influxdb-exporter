@@ -11,7 +11,6 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.InfluxDbExporter.Interfaces;
-using DaleGhent.NINA.InfluxDbExporter.Utilities;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
@@ -23,7 +22,7 @@ using System.Collections.Generic;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
-    public class FocuserData : IFocuserConsumer {
+    public partial class FocuserData : IFocuserConsumer {
         private readonly IInfluxDbExporterOptions options;
         private readonly IFocuserMediator focuserMediator;
 
@@ -96,6 +95,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
         public void Dispose() {
             focuserMediator.RemoveConsumer(this);
+            GC.SuppressFinalize(this);
         }
     }
 }

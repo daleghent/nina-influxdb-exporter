@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
-    public class WeatherData : IWeatherDataConsumer {
+    public partial class WeatherData : IWeatherDataConsumer {
         private readonly IInfluxDbExporterOptions options;
         private readonly IWeatherDataMediator weatherDataMediator;
 
@@ -144,6 +144,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
         public void Dispose() {
             weatherDataMediator.RemoveConsumer(this);
+            GC.SuppressFinalize(this);
         }
     }
 }

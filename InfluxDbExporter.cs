@@ -19,6 +19,7 @@ using NINA.Profile.Interfaces;
 using NINA.WPF.Base.Interfaces.Mediator;
 using System;
 using System.ComponentModel.Composition;
+using System.Threading;
 using System.Threading.Tasks;
 using Settings = DaleGhent.NINA.InfluxDbExporter.Properties.Settings;
 
@@ -26,6 +27,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
 
     [Export(typeof(IPluginManifest))]
     public class InfluxDbExporter : PluginBase {
+        public readonly CancellationTokenSource cts;
 
         [ImportingConstructor]
         public InfluxDbExporter(IProfileService profileService,
@@ -43,6 +45,8 @@ namespace DaleGhent.NINA.InfluxDbExporter {
                 CoreUtil.SaveSettings(Settings.Default);
             }
 
+            cts = new();
+
             InfluxDbExporterOptions ??= new(profileService);
 
             CameraData ??= new(InfluxDbExporterOptions, cameraMediator);
@@ -53,6 +57,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             SwitchData ??= new(InfluxDbExporterOptions, switchMediator);
             WeatherData ??= new(InfluxDbExporterOptions, weatherDataMediator);
             ImageMetadata ??= new(InfluxDbExporterOptions, imageSaveMediator);
+            MiscData ??= new(InfluxDbExporterOptions, profileService);
         }
 
         public override async Task Initialize() {
@@ -61,9 +66,13 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             } catch (Exception ex) {
                 Logger.Debug($"Failed to check auth on startup: {ex.Message}");
             }
+
+            _ = Task.Run(() => MiscData.Run(cts.Token));
         }
 
         public override Task Teardown() {
+            cts.Cancel();
+
             InfluxDbExporterOptions.RemoveProfileHandler();
             CameraData.Dispose();
             FocuserData.Dispose();
@@ -72,7 +81,10 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             SwitchData.Dispose();
             WeatherData.Dispose();
             GuidingData.Dispose();
+            MiscData.Dispose();
             ImageMetadata.Unregister();
+
+            cts.Dispose();
 
             return base.Teardown();
         }
@@ -84,6 +96,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
         public RotatorData RotatorData { get; set; }
         public SwitchData SwitchData { get; set; }
         public WeatherData WeatherData { get; set; }
+        public MiscData MiscData { get; set; }
         public InfluxDbExporterOptions InfluxDbExporterOptions { get; private set; }
         public ImageMetadata ImageMetadata { get; private set; }
     }

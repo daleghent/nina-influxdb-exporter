@@ -8,6 +8,13 @@ Global tags, applied to all metrics:
 * `profile_name`: The name of the active N.I.N.A. profile
 * `host_name`: The name of the computer
 
+### Astrometric
+
+| Metric | Definition | Type |
+| ------ | ---------- | ---- |
+| `astro_moon_altitude` | Moon's altitude in degrees | double |
+| `astro_sun_altitude` | Sun's altitude in degrees | double |
+
 ### Camera
 
 Additional tags:

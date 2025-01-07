@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("Dale Ghent")]
 // The product name that this plugin is part of
 [assembly: AssemblyProduct("InfluxDB Exporter")]
-[assembly: AssemblyCopyright("Copyright © 2022-2024 Dale Ghent")]
+[assembly: AssemblyCopyright("Copyright © 2022-2025 Dale Ghent")]
 
 // The minimum Version of N.I.N.A. that this plugin is compatible with
 [assembly: AssemblyMetadata("MinimumApplicationVersion", "3.2.0.1000")]

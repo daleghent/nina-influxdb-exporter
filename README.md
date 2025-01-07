@@ -139,6 +139,15 @@ Additional tags:
 | `image_rms_peak_dec_arcsec` | Peak guiding RMS of the declination axis during image exposure  | double |
 | `image_rms_peak_arcsec` | Combined peak RMS during image exposure | double |
 
+### Vendor or device-specific metrics
+
+These metrics are specific to certain devices or vendors.
+
+| Metric | Definition | Type |
+| ------ | ---------- | ---- |
+| `qhy_sensor_air_pressure` | Sensor chamber air pressure (certain QHY camera models) | double |
+| `qhy_sensor_humidity` | Sensor chamber humidity (certain QHY camera models) | double |
+
 # Getting help #
 
 Help for this plugin may be found in the **#plugin-discussions** channel on the NINA project [Discord chat server](https://discord.gg/nighttime-imaging) or by filing an issue report at this plugin's [Github repository](https://github.com/daleghent/nina-influxdb-exporter/issues).**

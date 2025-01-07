@@ -11,14 +11,12 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.InfluxDbExporter.Interfaces;
-using DaleGhent.NINA.InfluxDbExporter.Utilities;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
 using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Interfaces.Mediator;
-using NINA.Profile.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -56,6 +54,28 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData.Measurement("camera_battery_level")
                 .Field("value", valueInt)
                 .Timestamp(timeStamp, WritePrecision.Ns));
+
+            var camera = cameraMediator.GetDevice() is PersistSettingsCameraDecorator decorator
+                ? decorator.Camera
+                : cameraMediator.GetDevice();
+
+            if (camera is QHYCamera) {
+                var qhyCamera = camera as QHYCamera;
+
+                valueDouble = qhyCamera.QhySensorAirPressure;
+                if (!double.IsNaN(valueDouble)) {
+                    points.Add(PointData.Measurement("qhy_sensor_air_pressure")
+                        .Field("value", valueDouble)
+                        .Timestamp(timeStamp, WritePrecision.Ns));
+                }
+
+                valueDouble = qhyCamera.QhySensorHumidity;
+                if (!double.IsNaN(valueDouble)) {
+                    points.Add(PointData.Measurement("qhy_sensor_humidity")
+                        .Field("value", valueDouble)
+                        .Timestamp(timeStamp, WritePrecision.Ns));
+                }
+            }
 
             // Send the points
             var fullOptions = new InfluxDBClientOptions(options.InfluxDbUrl) {

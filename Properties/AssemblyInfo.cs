@@ -6,13 +6,13 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("1.0.0.101")]
-[assembly: AssemblyFileVersion("1.0.0.101")]
+[assembly: AssemblyVersion("1.0.0.102")]
+[assembly: AssemblyFileVersion("1.0.0.102")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("InfluxDB Exporter")]
 // [MANDATORY] A short description of your plugin
-[assembly: AssemblyDescription("Exports metrics to an InfluxDB 2.x instance")]
+[assembly: AssemblyDescription("Exports metrics to an InfluxDB 2.x or InfluxDB Cloud 2 instance")]
 
 // The following attributes are not required for the plugin per se, but are required by the official manifest meta data
 

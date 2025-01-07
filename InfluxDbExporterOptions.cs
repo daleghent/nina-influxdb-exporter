@@ -193,7 +193,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
         }
 
         private static bool CheckURLValid(string url) {
-            return Uri.TryCreate(url, UriKind.Absolute, out Uri uriResult) && uriResult.Scheme == Uri.UriSchemeHttp;
+            return Uri.TryCreate(url, UriKind.Absolute, out _);
         }
 
         internal void RemoveProfileHandler() {

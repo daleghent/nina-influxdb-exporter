@@ -11,11 +11,12 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.InfluxDbExporter.Interfaces;
-using DaleGhent.NINA.InfluxDbExporter.Utilities;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
+using Namotion.Reflection;
 using NINA.Core.Utility;
+using NINA.Image.Interfaces;
 using NINA.WPF.Base.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
@@ -98,6 +99,18 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 points.Add(PointData.Measurement("image_star_count")
                     .Field("value", valueLong)
                     .Timestamp(imgTime, WritePrecision.Ns));
+
+                if (!double.IsNaN(valueDouble = GetHocusFocusMetric(args.StarDetectionAnalysis, "FWHM"))) {
+                    points.Add(PointData.Measurement("image_fwhm")
+                        .Field("value", valueDouble)
+                        .Timestamp(imgTime, WritePrecision.Ns));
+                }
+
+                if (!double.IsNaN(valueDouble = GetHocusFocusMetric(args.StarDetectionAnalysis, "Eccentricity"))) {
+                    points.Add(PointData.Measurement("image_eccentricity")
+                        .Field("value", valueDouble)
+                        .Timestamp(imgTime, WritePrecision.Ns));
+                }
 
                 double rmsAvgRA = 0d;
                 double rmsAvgDec = 0d;
@@ -192,6 +205,11 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
         public void Unregister() {
             imageSaveMediator.ImageSaved -= ImageSaved;
+        }
+
+        private static double GetHocusFocusMetric(IStarDetectionAnalysis starDetectionAnalysis, string propertyName) {
+            return starDetectionAnalysis.HasProperty(propertyName) ?
+                (double)starDetectionAnalysis.GetType().GetProperty(propertyName).GetValue(starDetectionAnalysis) : double.NaN;
         }
     }
 }

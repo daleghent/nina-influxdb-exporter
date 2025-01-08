@@ -121,23 +121,25 @@ Additional tags:
 
 | Metric | Definition | Type |
 | ------ | ---------- | ---- |
-| `image_mean` | Pixel mean value | double |
-| `image_median` | Pixel median value | double |
-| `image_std_deviation` | Pixel value stardard deviation | double |
-| `image_mad` | Pixel value mean average deviation | double |
-| `image_min_adu` | Minimum pixel ADU value | integer |
-| `image_min_adu_count` | Number of occurences of min. pixel ADU value | integer |
-| `image_max_adu` | Maximum pixel ADU value | integer |
-| `image_max_adu_count` | Number of occurences of max. pixel ADU value | integer |
+| `image_eccentricity` | Average star eccentricity (Hocus Focus only) | double |
+| `image_fwhm` | Average star Full Width at Half Maximum (Hocus Focus only) | double |
 | `image_hfr` | Average star HFR | double |
 | `image_hfr_std_deviation` | Standard deviation of measured stars' HFR | double |
-| `image_star_count` | Count of stars in the image | integer |
+| `image_mad` | Pixel value mean average deviation | double |
+| `image_max_adu` | Maximum pixel ADU value | integer |
+| `image_max_adu_count` | Number of occurences of max. pixel ADU value | integer |
+| `image_mean` | Pixel mean value | double |
+| `image_median` | Pixel median value | double |
+| `image_min_adu` | Minimum pixel ADU value | integer |
+| `image_min_adu_count` | Number of occurences of min. pixel ADU value | integer |
 | `image_rms_avg_ra_arcsec` | Average guiding RMS of the RA axis during image exposure  | double |
 | `image_rms_avg_dec_arcsec` | Average guiding RMS of the declination axis during image exposure | double |
 | `image_rms_avg_arcsec` | Combined average RMS during image exposure | double |
 | `image_rms_peak_ra_arcsec` | Peak guiding RMS of the RA axis during image exposure | double |
 | `image_rms_peak_dec_arcsec` | Peak guiding RMS of the declination axis during image exposure  | double |
 | `image_rms_peak_arcsec` | Combined peak RMS during image exposure | double |
+| `image_star_count` | Count of stars in the image | integer |
+| `image_std_deviation` | Pixel value stardard deviation | double |
 
 ### Vendor or device-specific metrics
 

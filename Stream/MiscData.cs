@@ -35,12 +35,16 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         }
 
         public async void Run(CancellationToken ct) {
-            timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
+            try {
+                timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
 
-            MiscItems();
-
-            while (await timer.WaitForNextTickAsync(ct)) {
                 MiscItems();
+
+                while (await timer.WaitForNextTickAsync(ct)) {
+                    MiscItems();
+                }
+            } catch (OperationCanceledException) {
+                // do nothing
             }
         }
 

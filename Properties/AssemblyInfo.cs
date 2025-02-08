@@ -53,6 +53,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyMetadata("LongDescription", @"
 InfluxDB Exporter is a NINA plugin that transmits periodic hardware, guiding, and image metrics to an InfluxDB time-series database. From there, the metrics may be graphed using tools such as Grafana or InfluxDB’s own built-in graphing features.
 
+# Examples #
+* [Example Grafana dashboard](https://raw.githubusercontent.com/daleghent/nina-influxdb-exporter/refs/heads/main/Examples/Example%20NINA%20Dashboard.json)
+
 # Getting help #
 
 Help for this plugin may be found in the **#plugin-discussions** channel on the NINA project [Discord chat server](https://discord.gg/nighttime-imaging) or by filing an issue report at this plugin's [Github repository](https://github.com/daleghent/nina-influxdb-exporter/issues).")]

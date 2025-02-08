@@ -1,6 +1,10 @@
 ﻿# Influx Exporter
 [Documentation](https://daleghent.com/influxdb-exporter)
 
+## 1.0.0.105 - 2025-02-07
+* Added example Grafana dashboard
+* Fixed: Uncaught exception when closing NINA
+
 ## 1.0.0.104 - 2025-01-08
 * Added metrics for Hocus Focus' FWHM and star eccentricity
 

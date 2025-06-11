@@ -18,8 +18,8 @@ env:
   PLUGIN_SLN_NAME: "InfluxDB Exporter"
   PLUGIN_DLL_NAME: "InfluxDB Exporter"
   SLN_CONFIG: "Release"
-  TARGET_DIR: "bin/${{ SLN_CONFIG }}/net8.0-windows"
-  PACKAGE_DIR: "packages/${{ PLUGIN_NAME }}"
+  TARGET_DIR: "bin/$SLN_CONFIG/net8.0-windows"
+  PACKAGE_DIR: "packages/$PLUGIN_NAME"
 
 jobs:
   build-and-release:

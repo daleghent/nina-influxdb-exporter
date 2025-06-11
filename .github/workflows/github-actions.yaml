@@ -35,7 +35,7 @@ jobs:
       # This will build your solution. If the solution name differs from your plugin name, please adjust it here
       - name: Build .NET Assemblies
         run: |
-          dotnet restore nina-influxdb-exporter/${{ env.PLUGIN_SLN_NAME }}.sln
+          dotnet restore "nina-influxdb-exporter/${{ env.PLUGIN_SLN_NAME }}.sln"
           dotnet build "nina-influxdb-exporter/${{ env.PLUGIN_SLN_NAME }}.sln" -c Release -p:PostBuildEvent= -p:Version=${{ github.ref_name }}
 
       # If you have mkdocs documentation you want to include, you can uncomment and build it like this

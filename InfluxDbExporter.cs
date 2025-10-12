@@ -33,9 +33,12 @@ namespace DaleGhent.NINA.InfluxDbExporter {
         public InfluxDbExporter(IProfileService profileService,
                                 IImageSaveMediator imageSaveMediator,
                                 ICameraMediator cameraMediator,
+                                IDomeMediator domeMediator,
+                                IFilterWheelMediator filterWheelMediator,
                                 IFocuserMediator focuserMediator,
                                 IGuiderMediator guiderMediator,
                                 IRotatorMediator rotatorMediator,
+                                ISafetyMonitorMediator safetyMonitorMediator,
                                 ISwitchMediator switchMediator,
                                 ITelescopeMediator telescopeMediator,
                                 IWeatherDataMediator weatherDataMediator) {
@@ -50,10 +53,13 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             InfluxDbExporterOptions ??= new(profileService);
 
             CameraData ??= new(InfluxDbExporterOptions, cameraMediator);
+            DomeData ??= new(InfluxDbExporterOptions, domeMediator);
+            FilterWheelData ??= new(InfluxDbExporterOptions, filterWheelMediator);
             FocuserData ??= new(InfluxDbExporterOptions, focuserMediator);
             GuidingData ??= new(InfluxDbExporterOptions, guiderMediator);
             MountData ??= new(InfluxDbExporterOptions, telescopeMediator);
             RotatorData ??= new(InfluxDbExporterOptions, rotatorMediator);
+            SafetyMonitorData ??= new(InfluxDbExporterOptions, safetyMonitorMediator);
             SwitchData ??= new(InfluxDbExporterOptions, switchMediator);
             WeatherData ??= new(InfluxDbExporterOptions, weatherDataMediator);
             ImageMetadata ??= new(InfluxDbExporterOptions, imageSaveMediator);
@@ -75,14 +81,16 @@ namespace DaleGhent.NINA.InfluxDbExporter {
 
             InfluxDbExporterOptions.RemoveProfileHandler();
             CameraData.Dispose();
+            DomeData?.Dispose();
             FocuserData.Dispose();
             MountData.Dispose();
             RotatorData.Dispose();
+            SafetyMonitorData.Dispose();
             SwitchData.Dispose();
             WeatherData.Dispose();
             GuidingData.Dispose();
             MiscData.Dispose();
-            ImageMetadata.Unregister();
+            ImageMetadata.Dispose();
 
             cts.Dispose();
 
@@ -90,10 +98,13 @@ namespace DaleGhent.NINA.InfluxDbExporter {
         }
 
         public CameraData CameraData { get; set; }
+        public DomeData DomeData { get; set; }
+        public FilterWheelData FilterWheelData { get; set; }
         public FocuserData FocuserData { get; set; }
         public GuidingData GuidingData { get; set; }
         public MountData MountData { get; set; }
         public RotatorData RotatorData { get; set; }
+        public SafetyMonitorData SafetyMonitorData { get; set; }
         public SwitchData SwitchData { get; set; }
         public WeatherData WeatherData { get; set; }
         public MiscData MiscData { get; set; }

@@ -20,10 +20,11 @@ using NINA.Equipment.Equipment.MyGuider;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
-    public partial class GuidingData : IGuiderConsumer {
+    public partial class GuidingData : IDisposable, IGuiderConsumer {
         private readonly IInfluxDbExporterOptions options;
         private readonly IGuiderMediator guiderMediator;
 
@@ -32,7 +33,11 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             this.guiderMediator = guiderMediator;
 
             this.guiderMediator.RegisterConsumer(this);
+
             this.guiderMediator.GuideEvent += OnGuideEvent;
+            this.guiderMediator.GuidingStarted += OnGuidingStarted;
+            this.guiderMediator.GuidingStopped += OnGuidingStopped;
+            this.guiderMediator.AfterDither += OnAfterDither;
         }
 
         private async void SendGuideData(IGuideStep guideStep) {
@@ -117,6 +122,23 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 .Field("value", rmsPeakTotal)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
+            // Guide step details
+            points.Add(PointData.Measurement("guider_ra_distance")
+                .Field("value", guideStep.RADistanceRaw)
+                .Timestamp(timeStamp, WritePrecision.Ns));
+
+            points.Add(PointData.Measurement("guider_ra_duration")
+                .Field("value", guideStep.RADuration)
+                .Timestamp(timeStamp, WritePrecision.Ns));
+
+            points.Add(PointData.Measurement("guider_dec_distance")
+                .Field("value", guideStep.RADuration)
+                .Timestamp(timeStamp, WritePrecision.Ns));
+
+            points.Add(PointData.Measurement("guider_dec_duration")
+                .Field("value", guideStep.DECDuration)
+                .Timestamp(timeStamp, WritePrecision.Ns));
+
             // Send the points
             var fullOptions = new InfluxDBClientOptions(options.InfluxDbUrl) {
                 Token = options.InfluxDbToken,
@@ -146,18 +168,61 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             }
         }
 
+        public void OnGuideEvent(object sender, IGuideStep guideStep) {
+            SendGuideData(guideStep);
+        }
+
+        private async Task OnAfterDither(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.EventMetric)
+                .Tag("name", "guider_dither")
+                .Field("text", $"Dither")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
+        private async Task OnGuidingStarted(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.EventMetric)
+                .Tag("name", "guider_guiding_started")
+                .Field("text", $"Guiding started")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
+        private async Task OnGuidingStopped(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.EventMetric)
+                .Tag("name", "guider_guiding_stopped")
+                .Field("text", $"Guiding stopped")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
         private GuiderInfo GuiderInfo { get; set; }
 
         public void UpdateDeviceInfo(GuiderInfo deviceInfo) {
             GuiderInfo = deviceInfo;
         }
 
-        public void OnGuideEvent(object sender, IGuideStep guideStep) {
-            SendGuideData(guideStep);
-        }
-
         public void Dispose() {
             guiderMediator.GuideEvent -= OnGuideEvent;
+            guiderMediator.GuidingStarted -= OnGuidingStarted;
+            guiderMediator.GuidingStopped -= OnGuidingStopped;
+            guiderMediator.AfterDither -= OnAfterDither;
+
             guiderMediator.RemoveConsumer(this);
             GC.SuppressFinalize(this);
         }

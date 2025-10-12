@@ -25,7 +25,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Interfaces {
         bool TagEquipmentName { get; set; }
         string Hostname { get; }
         string ProfileName { get; }
-
+        string EventMetric { get; }
         bool AuthWorks { get; }
         string AuthFailureMessage { get; }
     }

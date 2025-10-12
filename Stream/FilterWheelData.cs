@@ -15,7 +15,7 @@ using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
 using NINA.Core.Utility;
-using NINA.Equipment.Equipment.MyRotator;
+using NINA.Equipment.Equipment.MyFilterWheel;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
@@ -23,35 +23,40 @@ using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
-    public partial class RotatorData : IDisposable, IRotatorConsumer {
+    public partial class FilterWheelData : IDisposable, IFilterWheelConsumer {
         private readonly IInfluxDbExporterOptions options;
-        private readonly IRotatorMediator rotatorMediator;
+        private readonly IFilterWheelMediator filterWheelMediator;
 
-        public RotatorData(IInfluxDbExporterOptions options, IRotatorMediator rotatorMediator) {
+        private readonly TimeSpan updateInterval = TimeSpan.FromSeconds(60);
+
+        public FilterWheelData(IInfluxDbExporterOptions options, IFilterWheelMediator filterWheelMediator) {
             this.options = options;
-            this.rotatorMediator = rotatorMediator;
-            this.rotatorMediator.RegisterConsumer(this);
+            this.filterWheelMediator = filterWheelMediator;
+            this.filterWheelMediator.RegisterConsumer(this);
 
-            this.rotatorMediator.Moved += OnRotatorMoved;
+            this.filterWheelMediator.FilterChanged += OnFilterChanged;
         }
 
-        private async void SendRotatorInfo() {
+        private async void SendFilterWheelInfo() {
             if (!Utilities.Utilities.ConfigCheck(this.options)) return;
-            if (!RotatorInfo.Connected) return;
+            if (!FilterWheelInfo.Connected) return;
 
+            if (DateTime.Now - LastUpdate < updateInterval) return;
+            if (FilterWheelInfo.IsMoving) return;
+
+            if (await SendPoints()) {
+                LastUpdate = DateTime.Now;
+            }
+        }
+
+        private async Task<bool> SendPoints() {
+            var success = false;
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();
-            float valueFloat;
 
-            valueFloat = float.IsNaN(RotatorInfo.MechanicalPosition) ? 0f : RotatorInfo.MechanicalPosition;
-            points.Add(PointData.Measurement("rotator_mechanical_angle")
-                .Field("value", valueFloat)
-                .Timestamp(timeStamp, WritePrecision.Ns));
-
-            valueFloat = float.IsNaN(RotatorInfo.Position) ? 0f : RotatorInfo.Position;
-            points.Add(PointData.Measurement("rotator_angle")
-                .Field("value", valueFloat)
-                .Timestamp(timeStamp, WritePrecision.Ns));
+            points.Add(PointData.Measurement("fwheel_filter")
+                .Field("value", FilterWheelInfo.SelectedFilter.Name)
+                .Timestamp(timeStamp, WritePrecision.S));
 
             // Send the points
             var fullOptions = new InfluxDBClientOptions(options.InfluxDbUrl) {
@@ -69,7 +74,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             }
 
             if (options.TagEquipmentName) {
-                fullOptions.AddDefaultTag("rotator_name", RotatorInfo.Name);
+                fullOptions.AddDefaultTag("focuser_name", FilterWheelInfo.Name);
             }
 
             using var client = new InfluxDBClient(fullOptions);
@@ -77,37 +82,42 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             try {
                 var writeApi = client.GetWriteApiAsync();
                 await writeApi.WritePointsAsync(points);
+                success = true;
             } catch (Exception ex) {
-                Logger.Error($"Failed to write focuser points: {ex.Message}");
+                Logger.Error($"Failed to write filter wheel points: {ex.Message}");
             }
+
+            return success;
         }
 
-        private RotatorInfo RotatorInfo { get; set; }
+        private FilterWheelInfo FilterWheelInfo { get; set; }
+        private DateTime LastUpdate { get; set; } = DateTime.MinValue;
 
-        public void UpdateDeviceInfo(RotatorInfo deviceInfo) {
-            RotatorInfo = deviceInfo;
-            SendRotatorInfo();
+        public void UpdateDeviceInfo(FilterWheelInfo info) {
+            FilterWheelInfo = info;
+            SendFilterWheelInfo();
         }
 
-        private async Task OnRotatorMoved(object sender, RotatorEventArgs e) {
+        private async Task OnFilterChanged(object sender, FilterChangedEventArgs e) {
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();
 
             points.Add(PointData
                 .Measurement(options.EventMetric)
-                .Tag("name", "rotator_moved")
-                .Field("text", $"Rotator moved. From: {e.From:F2}°; To: {e.To:F2}°")
-                .Field("rotator_moved_from", e.From)
-                .Field("rotator_moved_to", e.To)
+                .Tag("name", "filter_change")
+                .Field("text", $"Filter changed from {e.From.Name} to {e.To.Name}")
+                .Field("filter_from", e.From.Name)
+                .Field("filter_to", e.To.Name)
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);
+
+            Logger.Info($"Filter changed from {e.From.Name} to {e.To.Name}");
         }
 
         public void Dispose() {
-            rotatorMediator.Moved -= OnRotatorMoved;
-
-            rotatorMediator.RemoveConsumer(this);
+            filterWheelMediator.FilterChanged -= OnFilterChanged;
+            filterWheelMediator.RemoveConsumer(this);
             GC.SuppressFinalize(this);
         }
     }

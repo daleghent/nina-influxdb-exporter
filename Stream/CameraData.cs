@@ -22,7 +22,7 @@ using System.Collections.Generic;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
-    public partial class CameraData : ICameraConsumer {
+    public partial class CameraData : IDisposable, ICameraConsumer {
         private readonly IInfluxDbExporterOptions options;
         private readonly ICameraMediator cameraMediator;
 

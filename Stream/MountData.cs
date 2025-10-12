@@ -11,7 +11,6 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.InfluxDbExporter.Interfaces;
-using DaleGhent.NINA.InfluxDbExporter.Utilities;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
@@ -20,10 +19,11 @@ using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
-    public partial class MountData : ITelescopeConsumer {
+    public partial class MountData : IDisposable, ITelescopeConsumer {
         private readonly IInfluxDbExporterOptions options;
         private readonly ITelescopeMediator telescopeMediator;
 
@@ -31,6 +31,11 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             this.options = options;
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
+
+            this.telescopeMediator.Parked += OnMountParked;
+            this.telescopeMediator.Unparked += OnMountUnparked;
+            this.telescopeMediator.Homed += OnMountHomed;
+            this.telescopeMediator.Slewed += OnMountSlewed;
         }
 
         public async void SendMountInfo() {
@@ -87,7 +92,68 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             SendMountInfo();
         }
 
+        private async Task OnMountParked(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.EventMetric)
+                .Tag("name", "mount_parked")
+                .Field("text", $"Mount has parked")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
+        private async Task OnMountUnparked(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.EventMetric)
+                .Tag("name", "mount_unparked")
+                .Field("text", $"Mount has unparked")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
+        private async Task OnMountHomed(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.EventMetric)
+                .Tag("name", "mount_homed")
+                .Field("text", $"Mount has homed")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
+        private async Task OnMountSlewed(object sender, MountSlewedEventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.EventMetric)
+                .Tag("name", "mount_slewed")
+                .Field("text", $"Mount slewed. From RA: {e.From.RAString}, Dec: {e.From.DecString}; To RA: {e.To.RAString}, Dec: {e.To.DecString}")
+                .Field("mount_slew_from_ra", e.From.RAString)
+                .Field("mount_slew_from_dec", e.From.DecString)
+                .Field("mount_slew_to_ra", e.From.RAString)
+                .Field("mount_slew_to_dec", e.From.DecString)
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
         public void Dispose() {
+            telescopeMediator.Parked -= OnMountParked;
+            telescopeMediator.Unparked -= OnMountUnparked;
+            telescopeMediator.Homed -= OnMountHomed;
+            telescopeMediator.Slewed -= OnMountSlewed;
+
             telescopeMediator.RemoveConsumer(this);
             GC.SuppressFinalize(this);
         }

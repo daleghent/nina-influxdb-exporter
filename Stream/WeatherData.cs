@@ -11,7 +11,6 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.InfluxDbExporter.Interfaces;
-using DaleGhent.NINA.InfluxDbExporter.Utilities;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
@@ -23,7 +22,7 @@ using System.Collections.Generic;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
-    public partial class WeatherData : IWeatherDataConsumer {
+    public partial class WeatherData : IDisposable, IWeatherDataConsumer {
         private readonly IInfluxDbExporterOptions options;
         private readonly IWeatherDataMediator weatherDataMediator;
 

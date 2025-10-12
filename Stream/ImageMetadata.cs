@@ -24,7 +24,7 @@ using System.IO;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
-    public class ImageMetadata {
+    public class ImageMetadata : IDisposable {
         private readonly IImageSaveMediator imageSaveMediator;
         private readonly IInfluxDbExporterOptions options;
 
@@ -203,8 +203,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             }
         }
 
-        public void Unregister() {
+        public void Dispose() {
             imageSaveMediator.ImageSaved -= ImageSaved;
+            GC.SuppressFinalize(this);
         }
 
         private static double GetHocusFocusMetric(IStarDetectionAnalysis starDetectionAnalysis, string propertyName) {

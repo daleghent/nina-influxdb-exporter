@@ -76,20 +76,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 .Field("value", moonAltitude)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
-            var fullOptions = new InfluxDBClientOptions(options.InfluxDbUrl) {
-                Token = options.InfluxDbToken,
-                Bucket = options.InfluxDbBucket,
-                Org = options.InfluxDbOrgId,
-            };
-
-            using var client = new InfluxDBClient(fullOptions);
-
-            try {
-                var writeApi = client.GetWriteApiAsync();
-                await writeApi.WritePointsAsync(points);
-            } catch (Exception ex) {
-                Logger.Error($"Failed to write misc points: {ex.Message}");
-            }
+            await Utilities.Utilities.SendPoints(options, points);
         }
     }
 }

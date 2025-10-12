@@ -122,6 +122,8 @@ namespace DaleGhent.NINA.InfluxDbExporter {
         public bool AuthWorks { get; private set; }
         public string AuthFailureMessage { get; private set; }
 
+        public string EventMetric => "event";
+
         public async Task CheckAuth() {
             try {
                 if (string.IsNullOrWhiteSpace(InfluxDbUrl) ||

@@ -11,11 +11,9 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.InfluxDbExporter.Interfaces;
-using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
 using NINA.Astrometry;
-using NINA.Core.Utility;
 using NINA.Profile.Interfaces;
 using System;
 using System.Collections.Generic;

@@ -32,10 +32,10 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             this.options = options;
             this.imageSaveMediator = imageSaveMediator;
 
-            this.imageSaveMediator.ImageSaved += ImageSaved;
+            this.imageSaveMediator.ImageSaved += OnImageSaved;
         }
 
-        private async void ImageSaved(object sender, ImageSavedEventArgs args) {
+        private async void OnImageSaved(object sender, ImageSavedEventArgs args) {
             try {
                 if (!Utilities.Utilities.ConfigCheck(this.options)) return;
 
@@ -149,6 +149,25 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                     .Field("value", valueDouble)
                     .Timestamp(imgTime, WritePrecision.Ns));
 
+                // Event
+                var text = $"Image; Type: {args.MetaData.Image.ImageType}";
+                if (!string.IsNullOrEmpty(args.MetaData.Target.Name)) {
+                    text += $", Target: {args.MetaData.Target.Name}";
+                }
+                if (!string.IsNullOrEmpty(args.Filter)) {
+                    text += $", Filter: {args.Filter}";
+                }
+                if (args.Statistics != null) {
+                    text += $", Mean: {args.Statistics.Mean}";
+                }
+
+                points.Add(PointData
+                    .Measurement(options.EventMetric)
+                    .Tag("name", "image")
+                    .Field("title", "Image taken")
+                    .Field("text", text)
+                    .Timestamp(imgTime, WritePrecision.Ms));
+
                 // Send the points
                 var fullOptions = new InfluxDBClientOptions(options.InfluxDbUrl) {
                     Token = options.InfluxDbToken,
@@ -204,7 +223,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         }
 
         public void Dispose() {
-            imageSaveMediator.ImageSaved -= ImageSaved;
+            imageSaveMediator.ImageSaved -= OnImageSaved;
             GC.SuppressFinalize(this);
         }
 

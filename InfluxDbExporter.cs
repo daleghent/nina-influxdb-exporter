@@ -35,6 +35,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
                                 ICameraMediator cameraMediator,
                                 IDomeMediator domeMediator,
                                 IFilterWheelMediator filterWheelMediator,
+                                IFlatDeviceMediator flatDeviceMediator,
                                 IFocuserMediator focuserMediator,
                                 IGuiderMediator guiderMediator,
                                 IRotatorMediator rotatorMediator,
@@ -55,6 +56,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             CameraData ??= new(InfluxDbExporterOptions, cameraMediator);
             DomeData ??= new(InfluxDbExporterOptions, domeMediator);
             FilterWheelData ??= new(InfluxDbExporterOptions, filterWheelMediator);
+            FlatDeviceData ??= new(InfluxDbExporterOptions, flatDeviceMediator);
             FocuserData ??= new(InfluxDbExporterOptions, focuserMediator);
             GuidingData ??= new(InfluxDbExporterOptions, guiderMediator);
             MountData ??= new(InfluxDbExporterOptions, telescopeMediator);
@@ -82,13 +84,16 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             InfluxDbExporterOptions.RemoveProfileHandler();
             CameraData.Dispose();
             DomeData?.Dispose();
+            FilterWheelData.Dispose();
+            FlatDeviceData.Dispose();
             FocuserData.Dispose();
+            GuidingData.Dispose();
             MountData.Dispose();
             RotatorData.Dispose();
             SafetyMonitorData.Dispose();
             SwitchData.Dispose();
             WeatherData.Dispose();
-            GuidingData.Dispose();
+
             MiscData.Dispose();
             ImageMetadata.Dispose();
 
@@ -100,6 +105,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
         public CameraData CameraData { get; set; }
         public DomeData DomeData { get; set; }
         public FilterWheelData FilterWheelData { get; set; }
+        public FlatDeviceData FlatDeviceData { get; set; }
         public FocuserData FocuserData { get; set; }
         public GuidingData GuidingData { get; set; }
         public MountData MountData { get; set; }

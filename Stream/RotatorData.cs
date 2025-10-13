@@ -96,6 +96,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.EventMetric)
                 .Tag("name", "rotator_moved")
+                .Field("title", "Rotator moved")
                 .Field("text", $"Rotator moved. From: {e.From:F2}°; To: {e.To:F2}°")
                 .Field("rotator_moved_from", e.From)
                 .Field("rotator_moved_to", e.To)

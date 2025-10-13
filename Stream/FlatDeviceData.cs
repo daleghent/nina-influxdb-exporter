@@ -41,6 +41,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.EventMetric)
                 .Tag("name", "calibrator_opened")
+                .Field("title", "Calibrator opened")
                 .Field("text", "Calibrator opened")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
@@ -54,6 +55,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.EventMetric)
                 .Tag("name", "calibrator_closed")
+                .Field("title", "Calibrator closed")
                 .Field("text", "Calibrator closed")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
@@ -67,6 +69,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.EventMetric)
                 .Tag("name", "calibrator_brightness")
+                .Field("title", "Calibrator brightness changed")
                 .Field("text", $"Calibrator brightness changed. From: {e.From}; To: {e.To}")
                 .Field("calibrator_brightness_from", e.From)
                 .Field("calibrator_brightness_to", e.To)
@@ -84,6 +87,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.EventMetric)
                 .Tag("name", "calibrator_light_toggled")
+                .Field("title", "Calibrator light toggled")
                 .Field("text", $"Calibrator light: {state}")
                 .Field("calibrator_light_state", state)
                 .Timestamp(timeStamp, WritePrecision.Ms));

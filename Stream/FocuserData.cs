@@ -97,6 +97,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
             points.Add(PointData.Measurement(options.EventMetric)
                 .Tag("name", "autofocus")
+                .Field("title", "Autofocus completed")
                 .Field("text", $"Autofocus on filter {info.Filter}, Postion: {afpos}, Temperature: {aftemp}")
                 .Field("autofocus_position", Convert.ToInt32(afpos))
                 .Field("autofocus_temperature", aftemp)

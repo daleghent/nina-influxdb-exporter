@@ -122,7 +122,13 @@ namespace DaleGhent.NINA.InfluxDbExporter {
         public bool AuthWorks { get; private set; }
         public string AuthFailureMessage { get; private set; }
 
-        public string EventMetric => "event";
+        public string EventMetric {
+            get => pluginOptionsAccessor.GetValueString(nameof(EventMetric), "events");
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(EventMetric), value);
+                RaisePropertyChanged();
+            }
+        }
 
         public async Task CheckAuth() {
             try {

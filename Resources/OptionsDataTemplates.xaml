@@ -202,6 +202,29 @@
                         </StackPanel>
                     </StackPanel>
                 </TabItem>
+
+                <TabItem Header="Event Options">
+                    <StackPanel Margin="0,10,0,0" Orientation="Vertical">
+                        <StackPanel Margin="0,15,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="110"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                                <TextBlock.Text>Event Metric</TextBlock.Text>
+                                <TextBlock.ToolTip>The metric name for events</TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                Width="250"
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="EventMetric" />
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                    </StackPanel>
+                </TabItem>
             </TabControl>
         </StackPanel>
     </DataTemplate>

@@ -29,7 +29,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Utilities {
             return true;
         }
 
-        public async static Task<bool> SendPoints(IInfluxDbExporterOptions options, List<InfluxDB.Client.Writes.PointData> points) {
+        public static async Task<bool> SendPoints(IInfluxDbExporterOptions options, List<InfluxDB.Client.Writes.PointData> points) {
             if (!ConfigCheck(options)) { return false; }
             if (points == null) { return false; }
             if (points.Count == 0) { return false; }
@@ -40,6 +40,15 @@ namespace DaleGhent.NINA.InfluxDbExporter.Utilities {
                 Bucket = options.InfluxDbBucket,
                 Org = options.InfluxDbOrgId,
             };
+
+            if (options.TagProfileName) {
+                fullOptions.AddDefaultTag("profile_name", options.ProfileName);
+            }
+
+            if (options.TagHostname) {
+                fullOptions.AddDefaultTag("host_name", options.Hostname);
+            }
+
             using var client = new InfluxDB.Client.InfluxDBClient(fullOptions);
             try {
                 var writeApi = client.GetWriteApiAsync();

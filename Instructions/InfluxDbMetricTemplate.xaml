@@ -1,0 +1,67 @@
+﻿<!--
+    Copyright (c) 2025 Dale Ghent <daleg@elemental.org>
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/
+-->
+<ResourceDictionary
+    x:Class="DaleGhent.NINA.InfluxDbExporter.Instructions.InfluxDbMetricTemplate"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:DaleGhent.NINA.InfluxDbExporter.Instructions"
+    xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer"
+    xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:localconverters="clr-namespace:DaleGhent.NINA.InfluxDbExporter.Converters">
+    <localconverters:EmptyStringToNoDescription x:Key="EmptyStringToNoDescription" />
+    <localconverters:EmptyStringToFontStyleItalic x:Key="EmptyStringToFontStyleItalic" />
+
+    <DataTemplate DataType="{x:Type local:InfluxDbMetricSetup}">
+        <local:InfluxDbMetricSetupView />
+    </DataTemplate>
+
+    <GeometryGroup x:Key="InfluxDB_Logo_SVG">
+        <PathGeometry Figures="M 789.303,481.432L 712.871,150C 708.605,132.136 692.167,113.568 673.605,108.568L 325.735,1.43195C 321.439,0 316.439,0 310.735,0C 295.735,0 280.735,5.69733 270,15L 20.7347,247.136C 7.13599,259.333 -1.36693e-005,283.568 4.30265,300.697L 85.7346,655.697C 90,673.568 106.439,692.136 125,697.136L 450.735,798.568C 455,800 460,800 465.735,800C 480.735,800 495.735,794.303 506.439,785L 772.871,537.136C 786.439,522.864 793.605,500 789.303,481.432 Z M 362.167,80L 601.439,153.568C 610.735,156.432 610.735,160.697 601.439,162.864L 475.735,191.432C 466.439,194.303 452.871,190 446.439,182.864L 359.303,88.5681C 351.439,80.6973 352.871,77.136 362.167,80 Z M 511.439,508.568C 514.303,517.864 507.871,523.568 498.605,520.697L 240.735,440.697C 231.439,437.864 229.303,430 236.439,423.568L 433.605,240C 440.735,232.864 448.605,235.697 450.735,245M 86.4693,275L 295.735,80C 302.871,72.864 313.605,74.3027 320.735,80.6973L 425.735,194.303C 432.871,201.432 431.439,212.136 425,219.303L 215.735,414.303C 208.605,421.432 197.871,420 190.735,413.568L 85.7346,300C 78.6053,292.136 79.3027,280.697 86.4387,275M 137.204,583.568L 82.204,340.697C 79.3333,331.432 83.636,329.303 90.0373,336.432L 177.204,430.697C 184.333,437.864 186.469,451.432 184.333,460.697L 146.469,583.568C 143.636,593.568 139.333,593.568 137.204,583.568 Z M 443.636,726.432L 170.037,641.432C 160.443,638.38 155.053,628.219 157.901,618.568L 203.636,471.432C 206.688,461.86 216.824,456.469 226.469,459.303L 500.037,543.568C 509.333,546.432 515.037,556.432 512.204,566.432L 466.469,713.568C 463.147,722.959 453.391,728.453 443.636,726.432 Z M 686.469,527.136L 503.636,697.136C 496.469,704.303 492.901,701.432 495.772,692.136L 533.636,569.303C 536.469,560 546.469,550 556.469,548.568L 682.204,520C 691.469,516.432 692.901,520.697 686.469,527.136 Z M 706.469,490L 555.772,524.303C 546.469,527.136 536.469,520.697 534.333,511.432L 470.037,232.864C 467.204,223.568 473.636,213.568 482.901,211.432L 633.636,177.136C 642.901,174.303 652.901,180.697 655.037,190L 719.333,468.568C 721.469,479.303 715.772,488.568 706.469,490 Z" />
+    </GeometryGroup>
+
+    <DataTemplate DataType="{x:Type local:InfluxDbMetric}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <Button
+                        VerticalAlignment="Center"
+                        Command="{Binding OpenConfigurationWindowCommand}">
+                        <TextBlock
+                            Margin="5,2,5,2"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Text="Configuration" />
+                    </Button>
+
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="10,0,0,0"
+                        TextWrapping="Wrap"
+                        FontStyle="{Binding MeasurementDescription, Converter={StaticResource EmptyStringToFontStyleItalic}}"
+                        Text="{Binding MeasurementDescription, Converter={StaticResource EmptyStringToNoDescription}}" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate x:Key="DaleGhent.NINA.InfluxDbExporter.Instructions.InfluxDbMetricTemplate_Mini">
+        <mini:MiniSequenceItem>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="InfluxDB Metric" />
+
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Margin="5,0,0,0"
+                    TextWrapping="NoWrap"
+                    FontStyle="{Binding MeasurementDescription, Converter={StaticResource EmptyStringToFontStyleItalic}}"
+                    Text="{Binding MeasurementDescription, Converter={StaticResource EmptyStringToNoDescription}}" />
+            </StackPanel>
+        </mini:MiniSequenceItem>
+    </DataTemplate>
+</ResourceDictionary>

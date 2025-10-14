@@ -39,7 +39,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "calibrator_opened")
                 .Field("title", "Calibrator opened")
                 .Field("text", "Calibrator opened")
@@ -53,7 +53,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "calibrator_closed")
                 .Field("title", "Calibrator closed")
                 .Field("text", "Calibrator closed")
@@ -67,7 +67,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "calibrator_brightness")
                 .Field("title", "Calibrator brightness changed")
                 .Field("text", $"Calibrator brightness changed. From: {e.From}; To: {e.To}")
@@ -85,7 +85,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "calibrator_light_toggled")
                 .Field("title", "Calibrator light toggled")
                 .Field("text", $"Calibrator light: {state}")

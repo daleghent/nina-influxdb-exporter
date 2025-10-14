@@ -219,7 +219,7 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center">
                                 <TextBox.Text>
-                                    <Binding Path="EventMetric" />
+                                    <Binding Path="MeasurementName" />
                                 </TextBox.Text>
                             </TextBox>
                         </StackPanel>

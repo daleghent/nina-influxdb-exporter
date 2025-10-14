@@ -103,7 +103,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "filter_change")
                 .Field("title", "Filter changed")
                 .Field("text", $"Filter changed from {e.From.Name} to {e.To.Name}")

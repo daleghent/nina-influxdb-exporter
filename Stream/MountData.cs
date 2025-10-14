@@ -97,7 +97,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "mount_parked")
                 .Field("title", "Mount parked")
                 .Field("text", "Mount has parked")
@@ -111,7 +111,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "mount_unparked")
                 .Field("title", "Mount unparked")
                 .Field("text", "Mount has unparked")
@@ -125,7 +125,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "mount_homed")
                 .Field("title", "Mount homed")
                 .Field("text", "Mount has homed")
@@ -139,7 +139,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "mount_slewed")
                 .Field("title", "Mount slewed")
                 .Field("text", $"Mount slewed. From RA: {e.From.RAString}, Dec: {e.From.DecString}; To RA: {e.To.RAString}, Dec: {e.To.DecString}")

@@ -177,7 +177,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "guider_dither")
                 .Field("title", "Dither")
                 .Field("text", "Dither")
@@ -191,7 +191,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "guider_guiding_started")
                 .Field("title", "Guiding started")
                 .Field("text", "Guiding started")
@@ -205,7 +205,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "guider_guiding_stopped")
                 .Field("title", "Guiding stopped")
                 .Field("text", "Guiding stopped")

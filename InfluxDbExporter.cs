@@ -102,6 +102,8 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             return base.Teardown();
         }
 
+        public static InfluxDbExporterOptions InfluxDbExporterOptions { get; private set; }
+
         public CameraData CameraData { get; set; }
         public DomeData DomeData { get; set; }
         public FilterWheelData FilterWheelData { get; set; }
@@ -114,7 +116,6 @@ namespace DaleGhent.NINA.InfluxDbExporter {
         public SwitchData SwitchData { get; set; }
         public WeatherData WeatherData { get; set; }
         public MiscData MiscData { get; set; }
-        public InfluxDbExporterOptions InfluxDbExporterOptions { get; private set; }
         public ImageMetadata ImageMetadata { get; private set; }
     }
 }

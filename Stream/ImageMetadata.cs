@@ -162,7 +162,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 }
 
                 points.Add(PointData
-                    .Measurement(options.EventMetric)
+                    .Measurement(options.MeasurementName)
                     .Tag("name", "image")
                     .Field("title", "Image taken")
                     .Field("text", text)

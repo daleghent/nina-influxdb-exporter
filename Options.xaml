@@ -1,9 +1,10 @@
 ﻿<!--
-    Copyright Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2025 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at http://mozilla.org/MPL/2.0/-->
+    file, You can obtain one at http://mozilla.org/MPL/2.0/
+-->
 <ResourceDictionary
     x:Class="DaleGhent.NINA.InfluxDbExporter.Options"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -11,6 +12,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Resources/OptionsDataTemplates.xaml" />
+        <ResourceDictionary Source="Resources/Converters.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <DataTemplate x:Key="InfluxDB Exporter_Options">

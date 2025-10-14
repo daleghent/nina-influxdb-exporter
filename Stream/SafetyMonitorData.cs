@@ -36,7 +36,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "safety_safe_state")
                 .Field("title", "Safety state changed")
                 .Field("text", $"Safe state changed to {e.IsSafe}")

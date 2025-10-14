@@ -40,7 +40,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "dome_shutter_homed")
                 .Field("title", "Dome homed")
                 .Field("text", "Dome homed")
@@ -54,7 +54,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "dome_shutter_parked")
                 .Field("title", "Dome parked")
                 .Field("text", "Dome parked")
@@ -68,7 +68,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "dome_shutter_open")
                 .Field("title", "Dome shutter opened")
                 .Field("text", "Dome shutter opened")
@@ -82,7 +82,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "dome_shutter_close")
                 .Field("title", "Dome shutter closed")
                 .Field("text", "Dome shutter closed")
@@ -96,7 +96,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var points = new List<PointData>();
 
             points.Add(PointData
-                .Measurement(options.EventMetric)
+                .Measurement(options.MeasurementName)
                 .Tag("name", "dome_slewed")
                 .Field("title", "Dome slewed")
                 .Field("text", $"Dome slewed. From: {e.From:F2}°; To: {e.To:F2}°")

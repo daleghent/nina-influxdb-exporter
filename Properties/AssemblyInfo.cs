@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("1.0.0.106")]
-[assembly: AssemblyFileVersion("1.0.0.106")]
+[assembly: AssemblyVersion("1.0.0.107")]
+[assembly: AssemblyFileVersion("1.0.0.107")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("InfluxDB Exporter")]

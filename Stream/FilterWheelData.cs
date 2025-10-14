@@ -108,7 +108,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "fwheel_connected")
-                .Field("title", "Filter Wheel connected")
+                .Field("text", "Filter Wheel connected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);
@@ -121,7 +121,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "fwheel_disconnected")
-                .Field("title", "Filter Wheel disconnected")
+                .Field("text", "Filter Wheel disconnected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);

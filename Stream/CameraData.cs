@@ -122,7 +122,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "camera_connected")
-                .Field("title", "Camera connected")
+                .Field("text", "Camera connected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);
@@ -135,7 +135,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "camera_disconnected")
-                .Field("title", "Camera disconnected")
+                .Field("text", "Camera disconnected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);

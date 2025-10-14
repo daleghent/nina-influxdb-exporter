@@ -39,11 +39,13 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();
 
+            var safeState = e.IsSafe ? "SAFE" : "UNSAFE";
+
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "safety_safe_state")
                 .Field("title", "Safety state changed")
-                .Field("text", $"Safe state changed to {e.IsSafe}")
+                .Field("text", $"Safety state changed to {safeState}")
                 .Field("safety_issafe", e.IsSafe)
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
@@ -57,7 +59,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "safety_connected")
-                .Field("title", "Safety Monitor connected")
+                .Field("text", "Safety Monitor connected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);
@@ -70,7 +72,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "safety_disconnected")
-                .Field("title", "Safety Monitor disconnected")
+                .Field("text", "Safety Monitor disconnected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);

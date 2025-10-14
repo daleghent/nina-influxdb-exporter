@@ -45,7 +45,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "dome_connected")
-                .Field("title", "Dome connected")
+                .Field("text", "Dome connected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);
@@ -58,7 +58,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "dome_disconnected")
-                .Field("title", "Dome disconnected")
+                .Field("text", "Dome disconnected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);
@@ -71,7 +71,6 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "dome_shutter_homed")
-                .Field("title", "Dome homed")
                 .Field("text", "Dome homed")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
@@ -85,7 +84,6 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "dome_shutter_parked")
-                .Field("title", "Dome parked")
                 .Field("text", "Dome parked")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
@@ -99,7 +97,6 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "dome_shutter_open")
-                .Field("title", "Dome shutter opened")
                 .Field("text", "Dome shutter opened")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
@@ -113,7 +110,6 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "dome_shutter_close")
-                .Field("title", "Dome shutter closed")
                 .Field("text", "Dome shutter closed")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
@@ -127,8 +123,8 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "dome_slewed")
-                .Field("title", "Dome slewed")
-                .Field("text", $"Dome slewed. From: {e.From:F2}°; To: {e.To:F2}°")
+                .Field("title", "Dome slewed azimith")
+                .Field("text", $"Dome slewed azimith to {e.To:F2}°")
                 .Field("dome_slewed_from", e.From)
                 .Field("dome_slewed_to", e.To)
                 .Timestamp(timeStamp, WritePrecision.Ms));

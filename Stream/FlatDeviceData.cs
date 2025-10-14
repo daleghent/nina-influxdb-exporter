@@ -44,7 +44,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "calibrator_connected")
-                .Field("title", "Cover/Calibrator connected")
+                .Field("text", "Cover/Calibrator connected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);
@@ -57,7 +57,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "calibrator_disconnected")
-                .Field("title", "Cover/Calibrator disconnected")
+                .Field("text", "Cover/Calibrator disconnected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);
@@ -70,7 +70,6 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "calibrator_opened")
-                .Field("title", "Cover opened")
                 .Field("text", "Cover opened")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
@@ -84,7 +83,6 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "calibrator_closed")
-                .Field("title", "Cover closed")
                 .Field("text", "Cover closed")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 

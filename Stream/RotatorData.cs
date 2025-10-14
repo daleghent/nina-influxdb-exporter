@@ -99,7 +99,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "rotator_connected")
-                .Field("title", "Rotator connected")
+                .Field("text", "Rotator connected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);
@@ -112,7 +112,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "rotator_disconnected")
-                .Field("title", "Rotator disconnected")
+                .Field("text", "Rotator disconnected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);
@@ -126,7 +126,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 .Measurement(options.MeasurementName)
                 .Tag("name", "rotator_moved")
                 .Field("title", "Rotator moved")
-                .Field("text", $"Rotator moved. From: {e.From:F2}°; To: {e.To:F2}°")
+                .Field("text", $"Rotator moved to {e.To:F2}°")
                 .Field("rotator_moved_from", e.From)
                 .Field("rotator_moved_to", e.To)
                 .Timestamp(timeStamp, WritePrecision.Ms));

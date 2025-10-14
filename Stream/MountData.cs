@@ -102,7 +102,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "mount_connected")
-                .Field("title", "Mount connected")
+                .Field("text", "Mount connected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);
@@ -115,7 +115,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "mount_disconnected")
-                .Field("title", "Mount disconnected")
+                .Field("text", "Mount disconnected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);
@@ -128,7 +128,6 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "mount_parked")
-                .Field("title", "Mount parked")
                 .Field("text", "Mount has parked")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
@@ -142,7 +141,6 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "mount_unparked")
-                .Field("title", "Mount unparked")
                 .Field("text", "Mount has unparked")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
@@ -156,7 +154,6 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "mount_homed")
-                .Field("title", "Mount homed")
                 .Field("text", "Mount has homed")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 

@@ -182,7 +182,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "guider_connected")
-                .Field("title", "Guider connected")
+                .Field("text", "Guider connected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);
@@ -195,7 +195,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "guider_disconnected")
-                .Field("title", "Guider disconnected")
+                .Field("text", "Guider disconnected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);
@@ -208,7 +208,6 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "guider_dither")
-                .Field("title", "Dither")
                 .Field("text", "Dither")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
@@ -222,7 +221,6 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "guider_guiding_started")
-                .Field("title", "Guiding started")
                 .Field("text", "Guiding started")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
@@ -236,7 +234,6 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "guider_guiding_stopped")
-                .Field("title", "Guiding stopped")
                 .Field("text", "Guiding stopped")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 

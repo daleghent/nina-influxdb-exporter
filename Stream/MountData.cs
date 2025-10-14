@@ -32,6 +32,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
 
+            this.telescopeMediator.Connected += OnConnected;
+            this.telescopeMediator.Disconnected += OnDisconnected;
+
             this.telescopeMediator.Parked += OnMountParked;
             this.telescopeMediator.Unparked += OnMountUnparked;
             this.telescopeMediator.Homed += OnMountHomed;
@@ -92,6 +95,32 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             SendMountInfo();
         }
 
+        private async Task OnConnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "mount_connected")
+                .Field("title", "Mount connected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
+        private async Task OnDisconnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "mount_disconnected")
+                .Field("title", "Mount disconnected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
         private async Task OnMountParked(object sender, EventArgs e) {
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();
@@ -142,7 +171,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 .Measurement(options.MeasurementName)
                 .Tag("name", "mount_slewed")
                 .Field("title", "Mount slewed")
-                .Field("text", $"Mount slewed. From RA: {e.From.RAString}, Dec: {e.From.DecString}; To RA: {e.To.RAString}, Dec: {e.To.DecString}")
+                .Field("text", $"Mount slewed to {e.To.RAString}, {e.To.DecString} ({e.To.Epoch})")
                 .Field("mount_slew_from_ra", e.From.RAString)
                 .Field("mount_slew_from_dec", e.From.DecString)
                 .Field("mount_slew_to_ra", e.From.RAString)
@@ -153,6 +182,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         }
 
         public void Dispose() {
+            telescopeMediator.Connected -= OnConnected;
+            telescopeMediator.Disconnected -= OnDisconnected;
+
             telescopeMediator.Parked -= OnMountParked;
             telescopeMediator.Unparked -= OnMountUnparked;
             telescopeMediator.Homed -= OnMountHomed;

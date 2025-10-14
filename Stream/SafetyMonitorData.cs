@@ -17,6 +17,7 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
@@ -27,6 +28,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         public SafetyMonitorData(IInfluxDbExporterOptions options, ISafetyMonitorMediator safetyMonitorMediator) {
             this.options = options;
             this.safetyMonitorMediator = safetyMonitorMediator;
+
+            this.safetyMonitorMediator.Connected += OnConnected;
+            this.safetyMonitorMediator.Disconnected += OnDisconnected;
 
             this.safetyMonitorMediator.IsSafeChanged += OnIsSafeChanged;
         }
@@ -46,7 +50,36 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             await Utilities.Utilities.SendPoints(options, points);
         }
 
+        private async Task OnConnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "safety_connected")
+                .Field("title", "Safety Monitor connected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
+        private async Task OnDisconnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "safety_disconnected")
+                .Field("title", "Safety Monitor disconnected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
         public void Dispose() {
+            safetyMonitorMediator.Connected -= OnConnected;
+            safetyMonitorMediator.Disconnected -= OnDisconnected;
+
             safetyMonitorMediator.IsSafeChanged -= OnIsSafeChanged;
 
             GC.SuppressFinalize(this);

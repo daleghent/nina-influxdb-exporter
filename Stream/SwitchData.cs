@@ -19,6 +19,7 @@ using NINA.Equipment.Equipment.MySwitch;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
@@ -30,6 +31,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             this.options = options;
             this.switchMediator = switchMediator;
             this.switchMediator.RegisterConsumer(this);
+
+            this.switchMediator.Connected += OnConnected;
+            this.switchMediator.Disconnected += OnDisconnected;
         }
 
         private async void SendSwitchData() {
@@ -88,7 +92,36 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             SendSwitchData();
         }
 
+        private async Task OnConnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "switch_connected")
+                .Field("title", "Switch connected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
+        private async Task OnDisconnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "switch_disconnected")
+                .Field("title", "Switch disconnected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
         public void Dispose() {
+            switchMediator.Connected -= OnConnected;
+            switchMediator.Disconnected -= OnDisconnected;
+
             switchMediator.RemoveConsumer(this);
             GC.SuppressFinalize(this);
         }

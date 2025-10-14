@@ -19,6 +19,7 @@ using NINA.Equipment.Equipment.MyWeatherData;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
@@ -30,6 +31,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             this.options = options;
             this.weatherDataMediator = weatherDataMediator;
             this.weatherDataMediator.RegisterConsumer(this);
+
+            this.weatherDataMediator.Connected += OnConnected;
+            this.weatherDataMediator.Disconnected += OnDisconnected;
         }
 
         private async void SendWeatherData() {
@@ -141,7 +145,36 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             SendWeatherData();
         }
 
+        private async Task OnConnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "wx_connected")
+                .Field("title", "Weather source connected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
+        private async Task OnDisconnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "wx_disconnected")
+                .Field("title", "Weather source disconnected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
         public void Dispose() {
+            weatherDataMediator.Connected -= OnConnected;
+            weatherDataMediator.Disconnected -= OnDisconnected;
+
             weatherDataMediator.RemoveConsumer(this);
             GC.SuppressFinalize(this);
         }

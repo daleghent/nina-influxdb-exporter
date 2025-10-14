@@ -34,6 +34,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             this.filterWheelMediator = filterWheelMediator;
             this.filterWheelMediator.RegisterConsumer(this);
 
+            this.filterWheelMediator.Connected += OnConnected;
+            this.filterWheelMediator.Disconnected += OnDisconnected;
+
             this.filterWheelMediator.FilterChanged += OnFilterChanged;
         }
 
@@ -98,6 +101,32 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             SendFilterWheelInfo();
         }
 
+        private async Task OnConnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "fwheel_connected")
+                .Field("title", "Filter Wheel connected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
+        private async Task OnDisconnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "fwheel_disconnected")
+                .Field("title", "Filter Wheel disconnected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
         private async Task OnFilterChanged(object sender, FilterChangedEventArgs e) {
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();
@@ -117,7 +146,11 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         }
 
         public void Dispose() {
+            filterWheelMediator.Connected -= OnConnected;
+            filterWheelMediator.Disconnected -= OnDisconnected;
+
             filterWheelMediator.FilterChanged -= OnFilterChanged;
+
             filterWheelMediator.RemoveConsumer(this);
             GC.SuppressFinalize(this);
         }

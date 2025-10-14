@@ -32,6 +32,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             this.rotatorMediator = rotatorMediator;
             this.rotatorMediator.RegisterConsumer(this);
 
+            this.rotatorMediator.Connected += OnConnected;
+            this.rotatorMediator.Disconnected += OnDisconnected;
+
             this.rotatorMediator.Moved += OnRotatorMoved;
         }
 
@@ -89,6 +92,32 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             SendRotatorInfo();
         }
 
+        private async Task OnConnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "rotator_connected")
+                .Field("title", "Rotator connected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
+        private async Task OnDisconnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "rotator_disconnected")
+                .Field("title", "Rotator disconnected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
         private async Task OnRotatorMoved(object sender, RotatorEventArgs e) {
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();
@@ -106,6 +135,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         }
 
         public void Dispose() {
+            rotatorMediator.Connected -= OnConnected;
+            rotatorMediator.Disconnected -= OnDisconnected;
+
             rotatorMediator.Moved -= OnRotatorMoved;
 
             rotatorMediator.RemoveConsumer(this);

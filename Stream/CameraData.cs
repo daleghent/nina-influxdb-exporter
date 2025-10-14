@@ -19,6 +19,7 @@ using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
@@ -30,6 +31,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             this.options = options;
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
+
+            this.cameraMediator.Connected += OnConnected;
+            this.cameraMediator.Disconnected += OnDisconnected;
         }
 
         private async void SendCameraInfo() {
@@ -111,7 +115,36 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             SendCameraInfo();
         }
 
+        private async Task OnConnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "camera_connected")
+                .Field("title", "Camera connected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
+        private async Task OnDisconnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "camera_disconnected")
+                .Field("title", "Camera disconnected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
         public void Dispose() {
+            this.cameraMediator.Connected -= OnConnected;
+            this.cameraMediator.Disconnected -= OnDisconnected;
+
             cameraMediator.RemoveConsumer(this);
             GC.SuppressFinalize(this);
         }

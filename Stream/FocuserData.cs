@@ -31,6 +31,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             this.options = options;
             this.focuserMediator = focuserMediator;
             this.focuserMediator.RegisterConsumer(this);
+
+            this.focuserMediator.Connected += OnConnected;
+            this.focuserMediator.Disconnected += OnDisconnected;
         }
 
         private async void SendFocuserInfo() {
@@ -141,7 +144,36 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         public void UpdateUserFocused(FocuserInfo info) {
         }
 
+        private async Task OnConnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "focuser_connected")
+                .Field("title", "Focuser connected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
+        private async Task OnDisconnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "focuser_disconnected")
+                .Field("title", "Focuser disconnected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
         public void Dispose() {
+            focuserMediator.Connected -= OnConnected;
+            focuserMediator.Disconnected -= OnDisconnected;
+
             focuserMediator.RemoveConsumer(this);
             GC.SuppressFinalize(this);
         }

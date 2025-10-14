@@ -28,11 +28,40 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             this.options = options;
             this.domeMediator = domeMediator;
 
+            this.domeMediator.Connected += OnConnected;
+            this.domeMediator.Disconnected += OnDisconnected;
+
             this.domeMediator.Opened += OnDomeShutterOpen;
             this.domeMediator.Closed += OnDomeShutterClose;
             this.domeMediator.Homed += OnDomeHomed;
             this.domeMediator.Parked += OnDomeParked;
             this.domeMediator.Slewed += OnDomeSlewed;
+        }
+
+        private async Task OnConnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "dome_connected")
+                .Field("title", "Dome connected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
+        private async Task OnDisconnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "dome_disconnected")
+                .Field("title", "Dome disconnected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
         }
 
         private async Task OnDomeHomed(object sender, EventArgs e) {
@@ -108,6 +137,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         }
 
         public void Dispose() {
+            domeMediator.Connected -= OnConnected;
+            domeMediator.Disconnected -= OnDisconnected;
+
             domeMediator.Opened -= OnDomeShutterOpen;
             domeMediator.Closed -= OnDomeShutterClose;
             domeMediator.Homed -= OnDomeHomed;

@@ -34,6 +34,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
 
             this.guiderMediator.RegisterConsumer(this);
 
+            this.guiderMediator.Connected += OnConnected;
+            this.guiderMediator.Disconnected += OnDisconnected;
+
             this.guiderMediator.GuideEvent += OnGuideEvent;
             this.guiderMediator.GuidingStarted += OnGuidingStarted;
             this.guiderMediator.GuidingStopped += OnGuidingStopped;
@@ -172,6 +175,32 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             SendGuideData(guideStep);
         }
 
+        private async Task OnConnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "guider_connected")
+                .Field("title", "Guider connected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
+        private async Task OnDisconnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "guider_disconnected")
+                .Field("title", "Guider disconnected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
         private async Task OnAfterDither(object sender, EventArgs e) {
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();
@@ -221,6 +250,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         }
 
         public void Dispose() {
+            guiderMediator.Connected -= OnConnected;
+            guiderMediator.Disconnected -= OnDisconnected;
+
             guiderMediator.GuideEvent -= OnGuideEvent;
             guiderMediator.GuidingStarted -= OnGuidingStarted;
             guiderMediator.GuidingStopped -= OnGuidingStopped;

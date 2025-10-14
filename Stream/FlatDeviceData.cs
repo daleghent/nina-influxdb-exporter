@@ -28,10 +28,39 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             this.options = options;
             this.flatDeviceMediator = flatDeviceMediator;
 
+            this.flatDeviceMediator.Connected += OnConnected;
+            this.flatDeviceMediator.Disconnected += OnDisconnected;
+
             this.flatDeviceMediator.Opened += OnFlatCoverOpened;
             this.flatDeviceMediator.Closed += OnFlatCoverClosed;
             this.flatDeviceMediator.BrightnessChanged += OnBrightnessChanged;
             this.flatDeviceMediator.LightToggled += OnLightToggled;
+        }
+
+        private async Task OnConnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "calibrator_connected")
+                .Field("title", "Cover/Calibrator connected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
+        }
+
+        private async Task OnDisconnected(object sender, EventArgs e) {
+            var timeStamp = DateTime.UtcNow;
+            var points = new List<PointData>();
+
+            points.Add(PointData
+                .Measurement(options.MeasurementName)
+                .Tag("name", "calibrator_disconnected")
+                .Field("title", "Cover/Calibrator disconnected")
+                .Timestamp(timeStamp, WritePrecision.Ms));
+
+            await Utilities.Utilities.SendPoints(options, points);
         }
 
         private async Task OnFlatCoverOpened(object sender, EventArgs e) {
@@ -41,8 +70,8 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "calibrator_opened")
-                .Field("title", "Calibrator opened")
-                .Field("text", "Calibrator opened")
+                .Field("title", "Cover opened")
+                .Field("text", "Cover opened")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);
@@ -55,8 +84,8 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "calibrator_closed")
-                .Field("title", "Calibrator closed")
-                .Field("text", "Calibrator closed")
+                .Field("title", "Cover closed")
+                .Field("text", "Cover closed")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);
@@ -70,7 +99,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 .Measurement(options.MeasurementName)
                 .Tag("name", "calibrator_brightness")
                 .Field("title", "Calibrator brightness changed")
-                .Field("text", $"Calibrator brightness changed. From: {e.From}; To: {e.To}")
+                .Field("text", $"Calibrator brightness changed to {e.To}")
                 .Field("calibrator_brightness_from", e.From)
                 .Field("calibrator_brightness_to", e.To)
                 .Timestamp(timeStamp, WritePrecision.Ms));
@@ -96,6 +125,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         }
 
         public void Dispose() {
+            this.flatDeviceMediator.Connected -= OnConnected;
+            this.flatDeviceMediator.Disconnected -= OnDisconnected;
+
             this.flatDeviceMediator.Opened -= OnFlatCoverOpened;
             this.flatDeviceMediator.Closed -= OnFlatCoverClosed;
             this.flatDeviceMediator.BrightnessChanged -= OnBrightnessChanged;

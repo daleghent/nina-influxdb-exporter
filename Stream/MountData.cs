@@ -14,6 +14,7 @@ using DaleGhent.NINA.InfluxDbExporter.Interfaces;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
+using NINA.Astrometry;
 using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Equipment.Interfaces.Mediator;
@@ -164,15 +165,18 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             var timeStamp = DateTime.UtcNow;
             var points = new List<PointData>();
 
+            var fromCoords = e.From.Transform(Epoch.J2000);
+            var toCoords = e.To.Transform(Epoch.J2000);
+
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "mount_slewed")
                 .Field("title", "Mount slewed")
-                .Field("text", $"Mount slewed to {e.To.RAString}, {e.To.DecString} ({e.To.Epoch})")
-                .Field("mount_slew_from_ra", e.From.RAString)
-                .Field("mount_slew_from_dec", e.From.DecString)
-                .Field("mount_slew_to_ra", e.From.RAString)
-                .Field("mount_slew_to_dec", e.From.DecString)
+                .Field("text", $"Mount slewed to {toCoords.RAString}, {toCoords.DecString} ({toCoords.Epoch})")
+                .Field("mount_slew_from_ra", fromCoords.RAString)
+                .Field("mount_slew_from_dec", fromCoords.DecString)
+                .Field("mount_slew_to_ra", toCoords.RAString)
+                .Field("mount_slew_to_dec", toCoords.DecString)
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
             await Utilities.Utilities.SendPoints(options, points);

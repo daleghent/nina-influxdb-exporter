@@ -157,6 +157,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 if (!string.IsNullOrEmpty(args.Filter)) {
                     text += $", Filter: {args.Filter}";
                 }
+
+                text += $", Exp: {args.MetaData.Image.ExposureTime:F2}s";
+
                 if (args.Statistics != null) {
                     text += $", Mean: {args.Statistics.Mean:F2}";
                 }

@@ -158,7 +158,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                     text += $", Filter: {args.Filter}";
                 }
                 if (args.Statistics != null) {
-                    text += $", Mean: {args.Statistics.Mean}";
+                    text += $", Mean: {args.Statistics.Mean:F2}";
                 }
 
                 points.Add(PointData

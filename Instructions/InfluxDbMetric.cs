@@ -15,6 +15,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DaleGhent.NINA.InfluxDbExporter.Enums;
+using DaleGhent.NINA.InfluxDbExporter.MetadataClient;
+using InfluxDB.Client.Api.Domain;
+using InfluxDB.Client.Writes;
 using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Core.Utility;
@@ -52,6 +55,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Instructions {
         private readonly ITelescopeMediator telescopeMediator;
         private readonly IWeatherDataMediator weatherDataMediator;
 
+        private readonly IMetadata metadata;
         private IWindowService? windowService = null;
 
         [ImportingConstructor]
@@ -78,6 +82,11 @@ namespace DaleGhent.NINA.InfluxDbExporter.Instructions {
             this.switchMediator = switchMediator;
             this.telescopeMediator = telescopeMediator;
             this.weatherDataMediator = weatherDataMediator;
+
+            metadata = new Metadata(cameraMediator,
+                domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
+                guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
+                telescopeMediator, weatherDataMediator);
 
             MeasurementName = InfluxDbExporter.InfluxDbExporterOptions?.MeasurementName ?? "events";
         }
@@ -154,11 +163,10 @@ namespace DaleGhent.NINA.InfluxDbExporter.Instructions {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var points = new List<InfluxDB.Client.Writes.PointData>();
+            var points = new List<PointData>();
 
-            var point = InfluxDB.Client.Writes.PointData.Measurement(MeasurementName)
-                            .Field("text", MeasurementDescription)
-                            .Timestamp(DateTime.UtcNow, InfluxDB.Client.Api.Domain.WritePrecision.Ns);
+            var point = PointData.Measurement(MeasurementName)
+                            .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
 
             foreach (var entity in MeasurementEntities) {
                 if (string.IsNullOrWhiteSpace(entity.Name) || string.IsNullOrWhiteSpace(entity.Value)) {
@@ -166,16 +174,16 @@ namespace DaleGhent.NINA.InfluxDbExporter.Instructions {
                 }
                 switch (entity.Type) {
                     case MetricEntityTypes.Tag:
-                        point = point.Tag(entity.Name, entity.Value);
+                        point = point.Tag(entity.Name, Utilities.TokenResolver.ResolveTokens(entity.Value, this, metadata));
                         break;
 
                     case MetricEntityTypes.Field:
-                        if (double.TryParse(entity.Value, out double d)) {
+                        if (double.TryParse(Utilities.TokenResolver.ResolveTokens(entity.Value, this, metadata), out double d)) {
                             point = point.Field(entity.Name, d);
-                        } else if (bool.TryParse(entity.Value, out bool b)) {
+                        } else if (bool.TryParse(Utilities.TokenResolver.ResolveTokens(entity.Value, this, metadata), out bool b)) {
                             point = point.Field(entity.Name, b);
                         } else {
-                            point = point.Field(entity.Name, entity.Value);
+                            point = point.Field(entity.Name, Utilities.TokenResolver.ResolveTokens(entity.Value, this, metadata));
                         }
                         break;
 

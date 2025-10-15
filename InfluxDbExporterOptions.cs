@@ -28,6 +28,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
         private readonly PluginOptionsAccessor pluginOptionsAccessor;
         private readonly string hostname;
         private readonly Guid? guid;
+        private readonly DateTime dateTime;
 
         public InfluxDbExporterOptions(IProfileService profileService) {
             this.profileService = profileService;
@@ -42,6 +43,7 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             this.pluginOptionsAccessor = new PluginOptionsAccessor(this.profileService, guid.Value);
 
             hostname = Environment.MachineName;
+            dateTime = DateTime.Now;
         }
 
         public string InfluxDbUrl {
@@ -208,5 +210,13 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             profileService.ProfileChanged -= ProfileService_ProfileChanged;
             profileService.ActiveProfile.PropertyChanged -= ProfileService_PropertyChanged;
         }
+
+        public string TokenDate => dateTime.ToString("d");
+        public string TokenTime => dateTime.ToString("T");
+        public string TokenDateTime => dateTime.ToString("G");
+        public string TokenDateUtc => dateTime.ToUniversalTime().ToString("d");
+        public string TokenTimeUtc => dateTime.ToUniversalTime().ToString("T");
+        public string TokenDateTimeUtc => dateTime.ToUniversalTime().ToString("G");
+        public string TokenUnixEpoch => Utilities.Utilities.UnixEpoch(dateTime).ToString();
     }
 }

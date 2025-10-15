@@ -11,6 +11,8 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.InfluxDbExporter.Interfaces;
+using NINA.Core.Utility;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -27,6 +29,10 @@ namespace DaleGhent.NINA.InfluxDbExporter.Utilities {
             if (string.IsNullOrEmpty(options.InfluxDbOrgId)) { return false; }
 
             return true;
+        }
+
+        internal static long UnixEpoch(DateTime dateTime) {
+            return (long)dateTime.ToUniversalTime().Subtract(DateTime.UnixEpoch).TotalSeconds;
         }
 
         public static async Task<bool> SendPoints(IInfluxDbExporterOptions options, List<InfluxDB.Client.Writes.PointData> points) {
@@ -54,7 +60,8 @@ namespace DaleGhent.NINA.InfluxDbExporter.Utilities {
                 var writeApi = client.GetWriteApiAsync();
                 await writeApi.WritePointsAsync(points);
                 return true;
-            } catch {
+            } catch (Exception ex) {
+                Logger.Error($"Failed to send points to InfluxDB: {ex.Message}");
                 return false;
             }
         }

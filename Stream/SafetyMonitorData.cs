@@ -25,6 +25,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         private readonly IInfluxDbExporterOptions options;
         private readonly ISafetyMonitorMediator safetyMonitorMediator;
 
+        private const string safePeriodTag = "safety_safe_period";
+        private const string unsafePeriodTag = "safety_unsafe_period";
+
         public SafetyMonitorData(IInfluxDbExporterOptions options, ISafetyMonitorMediator safetyMonitorMediator) {
             this.options = options;
             this.safetyMonitorMediator = safetyMonitorMediator;
@@ -35,26 +38,69 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
             this.safetyMonitorMediator.IsSafeChanged += OnIsSafeChanged;
         }
 
+        private bool IsSafe { get; set; } = false;
+
+        private DateTimeOffset BeganSafe { get; set; } = DateTimeOffset.MinValue;
+
+        private DateTimeOffset BeganUnsafe { get; set; } = DateTimeOffset.MinValue;
+
         private async void OnIsSafeChanged(object sender, IsSafeEventArgs e) {
-            var timeStamp = DateTime.UtcNow;
+            var timeStamp = DateTimeOffset.UtcNow;
             var points = new List<PointData>();
 
-            var safeState = e.IsSafe ? "SAFE" : "UNSAFE";
+            IsSafe = e.IsSafe;
+            var safeStateText = e.IsSafe ? "SAFE" : "UNSAFE";
 
             points.Add(PointData
                 .Measurement(options.MeasurementName)
                 .Tag("name", "safety_safe_state")
                 .Field("title", "Safety state changed")
-                .Field("text", $"Safety state changed to {safeState}")
+                .Field("text", $"Safety state changed to {safeStateText}")
                 .Field("safety_issafe", e.IsSafe)
                 .Timestamp(timeStamp, WritePrecision.Ms));
+
+            // Just transitioned to SAFE
+            if (IsSafe) {
+                // record the beginning of this new SAFE period
+                BeganSafe = timeStamp;
+
+                // event: the beignning and end of the preceeding UNSAFE period
+                points.Add(PointData
+                    .Measurement(options.MeasurementName)
+                    .Tag("name", unsafePeriodTag)
+                    .Field("text", "Unafe period")
+                    .Field("timeEnd", timeStamp.ToUnixTimeMilliseconds())
+                    .Timestamp(BeganUnsafe, WritePrecision.Ms));
+            }
+
+            // Just transitioned to UNSAFE
+            if (!IsSafe) {
+                // record the beginning of this new UNSAFE period
+                BeganUnsafe = timeStamp;
+
+                // event: the beignning and end of the preceeding SAFE period
+                points.Add(PointData
+                    .Measurement(options.MeasurementName)
+                    .Tag("name", safePeriodTag)
+                    .Field("text", "Safe period")
+                    .Field("timeEnd", timeStamp.ToUnixTimeMilliseconds())
+                    .Timestamp(BeganSafe, WritePrecision.Ms));
+            }
 
             await Utilities.Utilities.SendPoints(options, points);
         }
 
         private async Task OnConnected(object sender, EventArgs e) {
-            var timeStamp = DateTime.UtcNow;
+            var timeStamp = DateTimeOffset.UtcNow;
             var points = new List<PointData>();
+
+            IsSafe = safetyMonitorMediator.GetInfo().IsSafe;
+
+            if (IsSafe) {
+                BeganSafe = timeStamp;
+            } else {
+                BeganUnsafe = timeStamp;
+            }
 
             points.Add(PointData
                 .Measurement(options.MeasurementName)
@@ -66,7 +112,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
         }
 
         private async Task OnDisconnected(object sender, EventArgs e) {
-            var timeStamp = DateTime.UtcNow;
+            var timeStamp = DateTimeOffset.UtcNow;
             var points = new List<PointData>();
 
             points.Add(PointData
@@ -75,7 +121,31 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 .Field("text", "Safety Monitor disconnected")
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
+            if (IsSafe) {
+                // event: the beignning and end of the existing SAFE period
+                points.Add(PointData
+                    .Measurement(options.MeasurementName)
+                    .Tag("name", "safety_safe_period")
+                    .Field("text", "Safe period")
+                    .Field("timeEnd", timeStamp.ToUnixTimeMilliseconds())
+                    .Timestamp(BeganSafe, WritePrecision.Ms));
+            }
+
+            if (!IsSafe) {
+                // event: the beignning and end of the existing UNSAFE period
+                points.Add(PointData
+                    .Measurement(options.MeasurementName)
+                    .Tag("name", "safety_unsafe_period")
+                    .Field("text", "Unafe period")
+                    .Field("timeEnd", timeStamp.ToUnixTimeMilliseconds())
+                    .Timestamp(BeganUnsafe, WritePrecision.Ms));
+            }
+
             await Utilities.Utilities.SendPoints(options, points);
+
+            BeganSafe = DateTimeOffset.MinValue;
+            BeganUnsafe = DateTimeOffset.MinValue;
+            IsSafe = false;
         }
 
         public void Dispose() {

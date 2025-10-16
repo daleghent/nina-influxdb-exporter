@@ -56,7 +56,7 @@ jobs:
           Copy-Item "bin/Release/InfluxDB.Client.dll" "packages/${{ env.PLUGIN_NAME }}/InfluxDB.Client.dll" -Force
           Copy-Item "bin/Release/InfluxDB.Client.Core.dll" "packages/${{ env.PLUGIN_NAME }}/InfluxDB.Client.Core.dll" -Force
           Copy-Item "bin/Release/JsonSubTypes.dll" "packages/${{ env.PLUGIN_NAME }}/JsonSubTypes.dll" -Force
-          Copy-Item "bin/Release/System.Reactive.dll" "$packages/${{ env.PLUGIN_NAME }}/System.Reactive.dll" -Force
+          Copy-Item "bin/Release/System.Reactive.dll" "packages/${{ env.PLUGIN_NAME }}/System.Reactive.dll" -Force
           Copy-Item "bin/Release/CsvHelper.dll" "packages/${{ env.PLUGIN_NAME }}/CsvHelper.dll" -Force
           Copy-Item "bin/Release/NodaTime.dll" "packages/${{ env.PLUGIN_NAME }}/NodaTime.dll" -Force
           Copy-Item "bin/Release/NodaTime.Serialization.JsonNet.dll" "packages/${{ env.PLUGIN_NAME }}/NodaTime.Serialization.JsonNet.dll" -Force

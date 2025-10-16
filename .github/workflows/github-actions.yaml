@@ -25,7 +25,7 @@ env:
   # The name of the resulting dll file
   PLUGIN_DLL_NAME: "DaleGhent.NINA.InfluxDbExporter"
   # The relative path to your manifest folder inside the manifest repository
-  PLUGIN_MANIFEST_PATH: "d/InfluxDB Exporter/3.0.0"
+  PLUGIN_MANIFEST_PATH: "i/InfluxDB Exporter/3.0.0"
   # Should this be in the beta plugin channel?
   PLUGIN_IS_BETA: false
 

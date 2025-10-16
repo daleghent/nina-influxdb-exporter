@@ -1,7 +1,7 @@
 ﻿# Influx Exporter
 [Documentation](https://daleghent.com/influxdb-exporter)
 
-## 1.5.0.100 - 2025-10-15
+## 1.5.0.101 - 2025-10-15
 * Added event metrics for hardware, imaging, and autofocus events. A metric with Grafana-style Annotation tags and fields are emitted when the following occurs:
   * Hardware connect and disconnect
   * Hardware use or movement:

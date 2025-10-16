@@ -1,6 +1,20 @@
 ﻿# Influx Exporter
 [Documentation](https://daleghent.com/influxdb-exporter)
 
+## 1.5.0.100 - 2025-10-15
+* Added event metrics for hardware, imaging, and autofocus events. A metric with Grafana-style Annotation tags and fields are emitted when the following occurs:
+  * Hardware connect and disconnect
+  * Hardware use or movement:
+	* Mount or dome slewed, parked, unparked, and homed
+	* Filter changed
+	* Rotator moved
+	* Safe or unsafe condition change, with annotation time range
+	* Guide dither
+	* Flat/cover device opened or closed, light on or off, and light brightness changes
+  * Image capture completed
+  * Autofocus run completed
+* Added **InfluxDB Metric** instruction to allow free-form event metrics to be defined and placed where required in a sequence. Field and tag data accepts Ground Station-style tokens.
+
 ## 1.0.0.105 - 2025-02-07
 * Added example Grafana dashboard
 * Fixed: Uncaught exception when closing NINA

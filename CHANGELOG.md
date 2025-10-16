@@ -1,4 +1,4 @@
-﻿# Influx Exporter
+﻿# InfluxDB Exporter
 [Documentation](https://daleghent.com/influxdb-exporter)
 
 ## 1.0.0.900 - 2025-10-16

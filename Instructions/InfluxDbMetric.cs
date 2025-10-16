@@ -119,15 +119,9 @@ namespace DaleGhent.NINA.InfluxDbExporter.Instructions {
 
         private ObservableCollection<InfluxDbMetricEntity> measurementEntities = [];
 
-        [JsonProperty]
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public ObservableCollection<InfluxDbMetricEntity> MeasurementEntities {
-            get {
-                if (measurementEntities.Count == 0) {
-                    measurementEntities.Add(new InfluxDbMetricEntity());
-                }
-
-                return measurementEntities;
-            }
+            get => measurementEntities;
             private set {
                 ObservableCollection<InfluxDbMetricEntity> newTags = [];
 

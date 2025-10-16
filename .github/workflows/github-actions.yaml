@@ -53,14 +53,14 @@ jobs:
         run: |
           Copy-Item "bin/Release/${{ env.PLUGIN_DLL_NAME }}.dll" "packages/${{ env.PLUGIN_NAME }}/${{ env.PLUGIN_DLL_NAME }}.dll" -Force
           Copy-Item "bin/Release/${{ env.PLUGIN_DLL_NAME }}.pdb" "packages/${{ env.PLUGIN_NAME }}/${{ env.PLUGIN_DLL_NAME }}.pdb" -Force          
-          Copy-Item "bin/Release/InfluxDB.Client.dll" "${{ env.PACKAGE_DIR }}/" -Force
-          Copy-Item "bin/Release/InfluxDB.Client.Core.dll" "${{ env.PACKAGE_DIR }}/" -Force
-          Copy-Item "bin/Release/JsonSubTypes.dll" "${{ env.PACKAGE_DIR }}/" -Force
-          Copy-Item "bin/Release/System.Reactive.dll" "${{ env.PACKAGE_DIR }}/" -Force
-          Copy-Item "bin/Release/CsvHelper.dll" "${{ env.PACKAGE_DIR }}/" -Force
-          Copy-Item "bin/Release/NodaTime.dll" "${{ env.PACKAGE_DIR }}/" -Force
-          Copy-Item "bin/Release/NodaTime.Serialization.JsonNet.dll" "${{ env.PACKAGE_DIR }}/" -Force
-          Copy-Item "bin/Release/RestSharp.dll" "${{ env.PACKAGE_DIR }}/" -Force
+          Copy-Item "bin/Release/InfluxDB.Client.dll" "packages/${{ env.PLUGIN_NAME }}/InfluxDB.Client.dll" -Force
+          Copy-Item "bin/Release/InfluxDB.Client.Core.dll" "packages/${{ env.PLUGIN_NAME }}/InfluxDB.Client.Core.dll" -Force
+          Copy-Item "bin/Release/JsonSubTypes.dll" "packages/${{ env.PLUGIN_NAME }}/JsonSubTypes.dll" -Force
+          Copy-Item "bin/Release/System.Reactive.dll" "$packages/${{ env.PLUGIN_NAME }}/System.Reactive.dll" -Force
+          Copy-Item "bin/Release/CsvHelper.dll" "packages/${{ env.PLUGIN_NAME }}/CsvHelper.dll" -Force
+          Copy-Item "bin/Release/NodaTime.dll" "packages/${{ env.PLUGIN_NAME }}/NodaTime.dll" -Force
+          Copy-Item "bin/Release/NodaTime.Serialization.JsonNet.dll" "packages/${{ env.PLUGIN_NAME }}/NodaTime.Serialization.JsonNet.dll" -Force
+          Copy-Item "bin/Release/RestSharp.dll" "packages/${{ env.PLUGIN_NAME }}/RestSharp.dll" -Force
       - name: Create Plugin archives and manifests
         run: |
           curl -LO https://raw.githubusercontent.com/isbeorn/nina.plugin.manifests/refs/heads/main/tools/CreateManifest.ps1?raw=true

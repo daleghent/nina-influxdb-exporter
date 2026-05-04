@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("InfluxDB Exporter")]
 // [MANDATORY] A short description of your plugin
-[assembly: AssemblyDescription("Exports metrics to an InfluxDB 2.x or InfluxDB Cloud 2 instance")]
+[assembly: AssemblyDescription("Exports metrics to time-series databases that are compatible with InfluxDB line protocol versions 1.x, 2.x, and 3.x")]
 
 // The following attributes are not required for the plugin per se, but are required by the official manifest meta data
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("Dale Ghent")]
 // The product name that this plugin is part of
 [assembly: AssemblyProduct("InfluxDB Exporter")]
-[assembly: AssemblyCopyright("Copyright © 2022-2025 Dale Ghent")]
+[assembly: AssemblyCopyright("Copyright © 2022-2026 Dale Ghent")]
 
 // The minimum Version of N.I.N.A. that this plugin is compatible with
 [assembly: AssemblyMetadata("MinimumApplicationVersion", "3.2.0.1000")]
@@ -51,7 +51,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyMetadata("AltScreenshotURL", "")]
 //[Optional] An in-depth description of your plugin
 [assembly: AssemblyMetadata("LongDescription", @"
-InfluxDB Exporter is a NINA plugin that transmits periodic hardware, guiding, and image metrics to an InfluxDB time-series database. From there, the metrics may be graphed using tools such as Grafana or InfluxDB’s own built-in graphing features.
+InfluxDB Exporter is a NINA plugin that transmits periodic hardware, guiding, and image metrics to an InfluxDB or InfluxDB-compatible time-series database. From there, the metrics may be graphed using tools such as Grafana or InfluxDB’s own built-in graphing features.
 
 # Examples #
 * [Example Grafana dashboard](https://raw.githubusercontent.com/daleghent/nina-influxdb-exporter/refs/heads/main/Examples/Example%20NINA%20Dashboard.json)

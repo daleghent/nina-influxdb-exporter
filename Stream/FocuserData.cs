@@ -11,7 +11,6 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.InfluxDbExporter.Interfaces;
-using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
 using NINA.Core.Utility;
@@ -53,33 +52,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 .Field("value", valueInt)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
-            // Send the points
-            var fullOptions = new InfluxDBClientOptions(options.InfluxDbUrl) {
-                Token = options.InfluxDbToken,
-                Bucket = options.InfluxDbBucket,
-                Org = options.InfluxDbOrgId,
-            };
-
-            if (options.TagProfileName) {
-                fullOptions.AddDefaultTag("profile_name", options.ProfileName);
-            }
-
-            if (options.TagHostname) {
-                fullOptions.AddDefaultTag("host_name", options.Hostname);
-            }
-
-            if (options.TagEquipmentName) {
-                fullOptions.AddDefaultTag("focuser_name", FocuserInfo.Name);
-            }
-
-            using var client = new InfluxDBClient(fullOptions);
-
-            try {
-                var writeApi = client.GetWriteApiAsync();
-                await writeApi.WritePointsAsync(points);
-            } catch (Exception ex) {
-                Logger.Error($"Failed to write focuser points: {ex.Message}");
-            }
+            await Utilities.Utilities.SendPoints(options, points);
         }
 
         private FocuserInfo FocuserInfo { get; set; }
@@ -107,38 +80,13 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 .Field("autofocus_filter", info.Filter)
                 .Timestamp(timeStamp, WritePrecision.Ms));
 
-            // Send the points
-            var fullOptions = new InfluxDBClientOptions(options.InfluxDbUrl) {
-                Token = options.InfluxDbToken,
-                Bucket = options.InfluxDbBucket,
-                Org = options.InfluxDbOrgId,
-            };
-
             if (string.IsNullOrEmpty(info.Filter)) {
                 info.Filter = "Unknown";
             }
-            fullOptions.AddDefaultTag("afop_filter", info.Filter);
 
-            if (options.TagProfileName) {
-                fullOptions.AddDefaultTag("profile_name", options.ProfileName);
-            }
+            points[0] = points[0].Tag("afop_filter", info.Filter);
 
-            if (options.TagHostname) {
-                fullOptions.AddDefaultTag("host_name", options.Hostname);
-            }
-
-            if (options.TagEquipmentName) {
-                fullOptions.AddDefaultTag("focuser_name", FocuserInfo.Name);
-            }
-
-            using var client = new InfluxDBClient(fullOptions);
-
-            try {
-                var writeApi = client.GetWriteApiAsync();
-                await writeApi.WritePointsAsync(points);
-            } catch (Exception ex) {
-                Logger.Error($"Failed to write focuser points: {ex.Message}");
-            }
+            await Utilities.Utilities.SendPoints(options, points);
         }
 
         public void UpdateUserFocused(FocuserInfo info) {

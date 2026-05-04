@@ -9,6 +9,7 @@
 
 #endregion "copyright"
 
+using DaleGhent.NINA.InfluxDbExporter.Enums;
 using DaleGhent.NINA.InfluxDbExporter.Interfaces;
 using DaleGhent.NINA.InfluxDbExporter.Utilities;
 using InfluxDB.Client;
@@ -17,6 +18,7 @@ using NINA.Profile;
 using NINA.Profile.Interfaces;
 using System;
 using System.ComponentModel;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading.Tasks;
@@ -78,6 +80,25 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             }
         }
 
+        public InfluxDbVersion InfluxDbVersion {
+            get {
+                var stored = pluginOptionsAccessor.GetValueString(nameof(InfluxDbVersion), nameof(InfluxDbVersion.V2));
+                return Enum.TryParse<InfluxDbVersion>(stored, out var result) ? result : InfluxDbVersion.V2;
+            }
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(InfluxDbVersion), value.ToString());
+                RaisePropertyChanged();
+            }
+        }
+
+        public string InfluxDbDatabase {
+            get => pluginOptionsAccessor.GetValueString(nameof(InfluxDbDatabase), string.Empty);
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(InfluxDbDatabase), value);
+                RaisePropertyChanged();
+            }
+        }
+
         public bool TagImageFileName {
             get => pluginOptionsAccessor.GetValueBoolean(nameof(TagImageFileName), false);
             set {
@@ -134,36 +155,27 @@ namespace DaleGhent.NINA.InfluxDbExporter {
 
         public async Task CheckAuth() {
             try {
-                if (string.IsNullOrWhiteSpace(InfluxDbUrl) ||
-                                       string.IsNullOrWhiteSpace(InfluxDbToken) ||
-                                                          string.IsNullOrWhiteSpace(InfluxDbOrgId) ||
-                                                                             string.IsNullOrWhiteSpace(InfluxDbBucket)) {
-                    throw new Exception($"Insufficient configuration");
+                if (string.IsNullOrWhiteSpace(InfluxDbUrl)) {
+                    throw new Exception("InfluxDB URL is required");
                 }
 
                 if (!CheckURLValid(InfluxDbUrl)) {
-                    throw new Exception($"Invalid InfluxDB URL");
+                    throw new Exception("Invalid InfluxDB URL");
                 }
 
-                var options = new InfluxDBClientOptions(InfluxDbUrl) {
-                    Token = InfluxDbToken,
-                    Bucket = InfluxDbBucket,
-                    Org = InfluxDbOrgId,
-                };
+                switch (InfluxDbVersion) {
+                    case InfluxDbVersion.V1:
+                        await CheckAuthV1();
+                        break;
 
-                using var client = new InfluxDBClient(options);
+                    case InfluxDbVersion.V2:
+                        await CheckAuthV2();
+                        break;
 
-                if (!await client.PingAsync()) {
-                    throw new Exception("Failed to complete protocol ping. Wrong address or host is down?");
+                    case InfluxDbVersion.V3:
+                        await CheckAuthV3();
+                        break;
                 }
-
-                var bucketApi = client.GetBucketsApi();
-                _ = await bucketApi.FindBucketByNameAsync(InfluxDbBucket) ?? throw new Exception($"Failed to access bucket {InfluxDbBucket}");
-
-                var version = await client.VersionAsync();
-
-                AuthWorks = true;
-                AuthFailureMessage = $"Authentication was successful. InfluxDB server {version}";
             } catch (Exception ex) {
                 Logger.Error($"Failed to interact with {InfluxDbUrl}: {ex.Message}");
                 AuthWorks = false;
@@ -172,6 +184,78 @@ namespace DaleGhent.NINA.InfluxDbExporter {
                 RaisePropertyChanged(nameof(AuthWorks));
                 RaisePropertyChanged(nameof(AuthFailureMessage));
             }
+        }
+
+        private async Task CheckAuthV1() {
+            if (string.IsNullOrWhiteSpace(InfluxDbDatabase)) {
+                throw new Exception("Database name is required for InfluxDB 1.x");
+            }
+
+            using var httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromSeconds(10);
+            var pingUrl = InfluxDbUrl.TrimEnd('/') + "/ping";
+            var response = await httpClient.GetAsync(pingUrl);
+
+            if (!response.IsSuccessStatusCode && response.StatusCode != System.Net.HttpStatusCode.NoContent) {
+                throw new Exception($"Ping failed with HTTP {(int)response.StatusCode}");
+            }
+
+            AuthWorks = true;
+            AuthFailureMessage = "Connection successful (InfluxDB 1.x / no-auth mode)";
+        }
+
+        private async Task CheckAuthV2() {
+            if (string.IsNullOrWhiteSpace(InfluxDbToken) ||
+                string.IsNullOrWhiteSpace(InfluxDbOrgId) ||
+                string.IsNullOrWhiteSpace(InfluxDbBucket)) {
+                throw new Exception("Token, Org ID, and Bucket are required for InfluxDB 2.x");
+            }
+
+            var options = new InfluxDBClientOptions(InfluxDbUrl) {
+                Token = InfluxDbToken,
+                Bucket = InfluxDbBucket,
+                Org = InfluxDbOrgId,
+            };
+
+            using var client = new InfluxDBClient(options);
+
+            if (!await client.PingAsync()) {
+                throw new Exception("Failed to complete protocol ping. Wrong address or host is down?");
+            }
+
+            var bucketApi = client.GetBucketsApi();
+            _ = await bucketApi.FindBucketByNameAsync(InfluxDbBucket) ?? throw new Exception($"Failed to access bucket {InfluxDbBucket}");
+
+            var version = await client.VersionAsync();
+
+            AuthWorks = true;
+            AuthFailureMessage = $"Authentication was successful. InfluxDB server {version}";
+        }
+
+        private async Task CheckAuthV3() {
+            if (string.IsNullOrWhiteSpace(InfluxDbDatabase)) {
+                throw new Exception("Database name is required for InfluxDB 3.x");
+            }
+
+            using var httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromSeconds(10);
+
+            if (!string.IsNullOrWhiteSpace(InfluxDbToken)) {
+                httpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Token", InfluxDbToken);
+            }
+
+            var pingUrl = InfluxDbUrl.TrimEnd('/') + "/ping";
+            var response = await httpClient.GetAsync(pingUrl);
+
+            if (!response.IsSuccessStatusCode && response.StatusCode != System.Net.HttpStatusCode.NoContent) {
+                throw new Exception($"Ping failed with HTTP {(int)response.StatusCode}");
+            }
+
+            AuthWorks = true;
+            AuthFailureMessage = string.IsNullOrWhiteSpace(InfluxDbToken)
+                ? "Connection successful (InfluxDB 3.x / no-auth)"
+                : "Connection successful (InfluxDB 3.x / token auth)";
         }
 
         public void SetInfluxDbToken(SecureString s) {
@@ -196,7 +280,9 @@ namespace DaleGhent.NINA.InfluxDbExporter {
             if (e.PropertyName.Equals(guid + "-" + nameof(InfluxDbUrl)) ||
                 e.PropertyName.Equals(guid + "-" + nameof(InfluxDbToken)) ||
                 e.PropertyName.Equals(guid + "-" + nameof(InfluxDbOrgId)) ||
-                e.PropertyName.Equals(guid + "-" + nameof(InfluxDbBucket))) {
+                e.PropertyName.Equals(guid + "-" + nameof(InfluxDbBucket)) ||
+                e.PropertyName.Equals(guid + "-" + nameof(InfluxDbVersion)) ||
+                e.PropertyName.Equals(guid + "-" + nameof(InfluxDbDatabase))) {
                 Logger.Trace($"Property changed: {e.PropertyName}");
                 await CheckAuth();
             }

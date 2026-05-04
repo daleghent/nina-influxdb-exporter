@@ -9,13 +9,16 @@
 
 #endregion "copyright"
 
+using DaleGhent.NINA.InfluxDbExporter.Enums;
 using System.ComponentModel;
 
 namespace DaleGhent.NINA.InfluxDbExporter.Interfaces {
 
     public interface IInfluxDbExporterOptions : INotifyPropertyChanged {
+        InfluxDbVersion InfluxDbVersion { get; set; }
         string InfluxDbUrl { get; set; }
         string InfluxDbBucket { get; set; }
+        string InfluxDbDatabase { get; set; }
         string InfluxDbOrgId { get; set; }
         string InfluxDbToken { get; set; }
         bool TagImageFileName { get; set; }

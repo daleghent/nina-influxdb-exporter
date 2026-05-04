@@ -11,7 +11,6 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.InfluxDbExporter.Interfaces;
-using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
 using Namotion.Reflection;
@@ -171,19 +170,13 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                     text += $", Mean: {args.Statistics.Mean:F2}";
                 }
 
-                points.Add(PointData
+                // Build the event point with per-image tags
+                var eventPoint = PointData
                     .Measurement(options.MeasurementName)
                     .Tag("name", "image")
                     .Field("title", "Image taken")
                     .Field("text", text)
-                    .Timestamp(imgTime, WritePrecision.Ms));
-
-                // Send the points
-                var fullOptions = new InfluxDBClientOptions(options.InfluxDbUrl) {
-                    Token = options.InfluxDbToken,
-                    Bucket = options.InfluxDbBucket,
-                    Org = options.InfluxDbOrgId,
-                };
+                    .Timestamp(imgTime, WritePrecision.Ms);
 
                 if (options.TagImageFileName) {
                     var imgName = args.PathToImage.LocalPath;
@@ -192,41 +185,28 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                         imgName = Path.GetFileName(imgName);
                     }
 
-                    fullOptions.AddDefaultTag("image_file_name", imgName);
+                    eventPoint = eventPoint.Tag("image_file_name", imgName);
                 }
 
                 if (!string.IsNullOrEmpty(args.MetaData.Target.Name)) {
-                    fullOptions.AddDefaultTag("target_name", args.MetaData.Target.Name);
+                    eventPoint = eventPoint.Tag("target_name", args.MetaData.Target.Name);
                 }
 
                 if (!string.IsNullOrEmpty(args.MetaData.Sequence.Title)) {
-                    fullOptions.AddDefaultTag("sequence_title", args.MetaData.Sequence.Title);
+                    eventPoint = eventPoint.Tag("sequence_title", args.MetaData.Sequence.Title);
                 }
 
                 if (!string.IsNullOrEmpty(args.MetaData.Camera.Name)) {
-                    fullOptions.AddDefaultTag("camera_name", args.MetaData.Camera.Name);
+                    eventPoint = eventPoint.Tag("camera_name", args.MetaData.Camera.Name);
                 }
 
                 if (!string.IsNullOrEmpty(args.MetaData.Camera.ReadoutModeName)) {
-                    fullOptions.AddDefaultTag("readout_mode", args.MetaData.Camera.ReadoutModeName);
+                    eventPoint = eventPoint.Tag("readout_mode", args.MetaData.Camera.ReadoutModeName);
                 }
 
-                if (options.TagProfileName) {
-                    fullOptions.AddDefaultTag("profile_name", options.ProfileName);
-                }
+                points.Add(eventPoint);
 
-                if (options.TagHostname) {
-                    fullOptions.AddDefaultTag("host_name", options.Hostname);
-                }
-
-                using var client = new InfluxDBClient(fullOptions);
-
-                try {
-                    var writeApi = client.GetWriteApiAsync();
-                    await writeApi.WritePointsAsync(points);
-                } catch (Exception ex) {
-                    Logger.Error($"Failed to write image points: {ex.Message}");
-                }
+                await Utilities.Utilities.SendPoints(options, points);
             } catch (Exception ex) {
                 Logger.Error(ex);
             }

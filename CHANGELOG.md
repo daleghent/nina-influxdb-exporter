@@ -1,6 +1,9 @@
 ﻿# InfluxDB Exporter
 [Documentation](https://daleghent.com/influxdb-exporter)
 
+## 2.0.0.0 - TBD
+* Added support for InfluxDB protocol versions 1 and 3
+
 ## 1.1.0.900 - 2025-10-25
 * Added guard for null filter names
 * Corrected the metadata properties used for image-specific guide RMS stats

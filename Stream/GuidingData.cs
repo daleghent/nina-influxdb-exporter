@@ -11,7 +11,6 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.InfluxDbExporter.Interfaces;
-using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
 using NINA.Core.Interfaces;
@@ -142,33 +141,7 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 .Field("value", guideStep.DECDuration)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
-            // Send the points
-            var fullOptions = new InfluxDBClientOptions(options.InfluxDbUrl) {
-                Token = options.InfluxDbToken,
-                Bucket = options.InfluxDbBucket,
-                Org = options.InfluxDbOrgId,
-            };
-
-            if (options.TagProfileName) {
-                fullOptions.AddDefaultTag("profile_name", options.ProfileName);
-            }
-
-            if (options.TagHostname) {
-                fullOptions.AddDefaultTag("host_name", options.Hostname);
-            }
-
-            if (options.TagEquipmentName) {
-                fullOptions.AddDefaultTag("guider_name", GuiderInfo.Name);
-            }
-
-            using var client = new InfluxDBClient(fullOptions);
-
-            try {
-                var writeApi = client.GetWriteApiAsync();
-                await writeApi.WritePointsAsync(points);
-            } catch (Exception ex) {
-                Logger.Error($"Failed to write guider points: {ex.Message}");
-            }
+            await Utilities.Utilities.SendPoints(options, points);
         }
 
         public void OnGuideEvent(object sender, IGuideStep guideStep) {

@@ -17,6 +17,7 @@ using InfluxDB.Client.Writes;
 using NINA.Core.Interfaces;
 using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyGuider;
+using NINA.Equipment.Equipment.MyGuider.PHD2.PhdEvents;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
@@ -135,12 +136,26 @@ namespace DaleGhent.NINA.InfluxDbExporter.Stream {
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             points.Add(PointData.Measurement("guider_dec_distance")
-                .Field("value", guideStep.RADuration)
+                .Field("value", guideStep.DECDistanceRaw)
                 .Timestamp(timeStamp, WritePrecision.Ns));
 
             points.Add(PointData.Measurement("guider_dec_duration")
                 .Field("value", guideStep.DECDuration)
                 .Timestamp(timeStamp, WritePrecision.Ns));
+
+            if (guideStep is PhdEventGuideStep phd2GuideStep) {
+                if (!double.IsNaN(phd2GuideStep.StarMass)) {
+                    points.Add(PointData.Measurement("guider_star_mass")
+                        .Field("value", phd2GuideStep.StarMass)
+                        .Timestamp(timeStamp, WritePrecision.Ns));
+                }
+
+                if (!double.IsNaN(phd2GuideStep.SNR)) {
+                    points.Add(PointData.Measurement("guider_star_snr")
+                        .Field("value", phd2GuideStep.SNR)
+                        .Timestamp(timeStamp, WritePrecision.Ns));
+                }
+            }
 
             // Send the points
             var fullOptions = new InfluxDBClientOptions(options.InfluxDbUrl) {
